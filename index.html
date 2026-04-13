@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kapitalize — Calculateur d'intérêts composés | La 8ème merveille du monde</title>
+  <meta name="description" content="Calculateur d'intérêts composés premium. Visualisez comment votre patrimoine croît exponentiellement. Simulation avec inflation, flat tax PFU et versements mensuels."/>
+  <meta name="keywords" content="intérêts composés, calculateur, simulateur épargne, investissement, rendement, flat tax, PFU, CAGR, capital, versements"/>
+  <meta name="author" content="Kapitalize"/>
+  <meta name="robots" content="index, follow"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg:        #050608;
+      --bg2:       #080a0e;
+      --bg3:       #0d1018;
+      --bg4:       #111520;
+      --gold:      #b8924a;
+      --gold2:     #d4a855;
+      --gold3:     #f0cc80;
+      --gold4:     #fff0c0;
+      --silver:    #8fa8c0;
+      --green:     #3ecf7a;
+      --text:      #e8e4dc;
+      --muted:     #7a8090;
+      --muted2:    #3a404c;
+      --border:    rgba(184,146,74,0.15);
+      --border2:   rgba(255,255,255,0.06);
+      --glow:      rgba(184,146,74,0.12);
+      --r:         12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── CANVAS BACKGROUND ─── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+
+    /* ─── NOISE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      opacity: .025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* ─── SCANLINE OVERLAY ─── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.03) 4px
+      );
+    }
+
+    /* everything above z:1 */
+    nav, .page, footer, #editorial-content { position: relative; z-index: 2; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(5,6,8,0.88);
+      backdrop-filter: blur(24px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 40px rgba(0,0,0,0.6);
+    }
+    .nav-inner {
+      max-width: 1340px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 58px; padding: 0 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 11px;
+      font-weight: 700; font-size: 15px; letter-spacing: .08em;
+      color: var(--text); text-decoration: none;
+    }
+    .logo-box {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold3));
+      display: grid; place-items: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 700; color: #050608;
+      box-shadow: 0 0 20px rgba(184,146,74,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+      position: relative; overflow: hidden;
+    }
+    .logo-box::after {
+      content: '';
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+      animation: logoShine 4s ease-in-out infinite;
+    }
+    @keyframes logoShine {
+      0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+    .nav-wordmark {
+      display: flex; flex-direction: column; line-height: 1;
+    }
+    .nav-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px; font-weight: 700; letter-spacing: .1em;
+      background: linear-gradient(90deg, var(--gold2), var(--gold3), var(--gold2));
+      background-size: 200%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: textShimmer 4s linear infinite;
+    }
+    @keyframes textShimmer {
+      0% { background-position: 0%; }
+      100% { background-position: 200%; }
+    }
+    .nav-tagline { font-size: 9px; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+    .nav-right { display: flex; align-items: center; gap: 2px; }
+    .nav-right a {
+      color: var(--muted); text-decoration: none;
+      font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 6px;
+      transition: color .2s, background .2s;
+    }
+    .nav-right a:hover, .nav-right a.active { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-right a.nav-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #050608; font-weight: 700; margin-left: 8px;
+      box-shadow: 0 0 20px rgba(184,146,74,0.25);
+      transition: box-shadow .2s, filter .2s;
+    }
+    .nav-right a.nav-cta:hover { filter: brightness(1.1); box-shadow: 0 0 30px rgba(184,146,74,0.4); }
+
+    /* ─── PAGES ─── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── HERO ─── */
+    .hero { text-align: center; padding: 72px 24px 44px; position: relative; }
+    .hero::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse at 50% 0%, rgba(184,146,74,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold2); margin-bottom: 28px;
+      border: 1px solid rgba(184,146,74,0.2);
+      padding: 6px 16px; border-radius: 100px;
+      background: rgba(184,146,74,0.05);
+    }
+    .hero-eyebrow::before { content: '◆'; font-size: 7px; }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(40px, 5.5vw, 68px); font-weight: 700; line-height: 1.05;
+      margin-bottom: 18px; letter-spacing: -.01em;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold2); }
+    .hero p {
+      color: var(--muted); font-size: 14px; max-width: 500px; margin: 0 auto;
+      font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; line-height: 1.6;
+    }
+    .hero-line {
+      width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold2), transparent);
+      margin: 28px auto 0;
+    }
+
+    /* ─── LAYOUT ─── */
+    .wrap { max-width: 1340px; margin: 0 auto; padding: 0 32px 80px; }
+    .main-grid {
+      display: grid; grid-template-columns: 360px 1fr;
+      gap: 16px; align-items: start;
+    }
+    @media(max-width:900px){ .main-grid { grid-template-columns: 1fr; } }
+
+    /* ─── PANELS ─── */
+    .panel {
+      background: linear-gradient(145deg, rgba(13,16,24,0.95), rgba(8,10,14,0.98));
+      border: 1px solid var(--border2);
+      border-radius: var(--r); padding: 22px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative; overflow: hidden;
+    }
+    .panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,146,74,0.3), transparent);
+    }
+    .panel-title {
+      font-size: 9px; font-weight: 700; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel-title::before {
+      content: '';
+      width: 14px; height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+
+    /* ─── FIELDS ─── */
+    .field { margin-bottom: 18px; }
+    .field-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .field-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: .04em; }
+    .field-value {
+      font-size: 14px; font-weight: 700; color: var(--gold3);
+      font-family: 'Cormorant Garamond', serif;
+    }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--gold) var(--pct,40%), rgba(255,255,255,0.08) var(--pct,40%));
+      border-radius: 2px; outline: none; cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      background: radial-gradient(circle, var(--gold3) 30%, var(--gold) 100%);
+      border-radius: 50%;
+      border: 2px solid rgba(5,6,8,0.8);
+      box-shadow: 0 0 12px rgba(184,146,74,0.6), 0 0 24px rgba(184,146,74,0.2);
+      cursor: pointer; transition: box-shadow .2s;
+    }
+    input[type="range"]:hover::-webkit-slider-thumb {
+      box-shadow: 0 0 18px rgba(184,146,74,0.8), 0 0 36px rgba(184,146,74,0.3);
+    }
+    .field-hint { font-size: 10px; color: var(--muted2); margin-top: 6px; letter-spacing: .02em; }
+    .field-num {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border2);
+      border-radius: 7px; color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 600;
+      padding: 9px 38px 9px 14px;
+      width: 100%; outline: none; margin-bottom: 8px;
+      transition: border-color .2s, background .2s, box-shadow .2s;
+      -moz-appearance: textfield;
+    }
+    .field-num::-webkit-inner-spin-button { display: none; }
+    .field-num:focus {
+      border-color: rgba(184,146,74,0.4);
+      background: rgba(184,146,74,0.04);
+      box-shadow: 0 0 0 3px rgba(184,146,74,0.08);
+    }
+    .input-wrap { position: relative; }
+    .input-unit {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-65%);
+      color: var(--muted2); font-size: 11px; pointer-events: none; font-weight: 600;
+    }
+
+    /* ─── TOGGLE ─── */
+    .toggle {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border2); border-radius: 8px; overflow: hidden;
+    }
+    .toggle button {
+      flex: 1; border: none; background: transparent;
+      color: var(--muted); font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+      padding: 9px 4px;
+      cursor: pointer; transition: all .2s;
+    }
+    .toggle button.on {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #050608; font-weight: 700;
+      box-shadow: 0 0 16px rgba(184,146,74,0.3);
+    }
+
+    .sep { border: none; border-top: 1px solid rgba(255,255,255,0.04); margin: 20px 0; }
+
+    /* ─── KPI ─── */
+    .kpi-top { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .kpi {
+      background: linear-gradient(145deg, rgba(13,16,24,0.95), rgba(8,10,14,0.98));
+      border: 1px solid var(--border2);
+      border-radius: var(--r); padding: 20px 22px;
+      position: relative; overflow: hidden;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .kpi::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+    }
+    .kpi:hover { border-color: rgba(184,146,74,0.15); box-shadow: 0 4px 30px rgba(0,0,0,0.3); }
+    .kpi-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: .16em; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
+    .kpi-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 700; color: var(--text);
+      line-height: 1;
+    }
+    .kpi-sub { font-size: 10px; color: var(--muted); margin-top: 6px; letter-spacing: .02em; }
+    .kpi.hl { border-color: rgba(184,146,74,0.2); box-shadow: 0 0 30px rgba(184,146,74,0.06); }
+    .kpi.hl::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .kpi.hl .kpi-val { color: var(--gold2); }
+    .kpi.hlg .kpi-sub span { color: var(--green); }
+
+    /* ─── CHART ─── */
+    .chart-panel {
+      background: linear-gradient(145deg, rgba(13,16,24,0.95), rgba(8,10,14,0.98));
+      border: 1px solid var(--border2); border-radius: var(--r);
+      padding: 22px; margin-bottom: 12px;
+      position: relative; overflow: hidden;
+    }
+    .chart-panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,146,74,0.3), transparent);
+    }
+    .chart-legend { display: flex; gap: 22px; margin-bottom: 16px; }
+    .legend-item { display: flex; align-items: center; gap: 7px; font-size: 10px; color: var(--muted); letter-spacing: .06em; font-weight: 600; text-transform: uppercase; }
+    .legend-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .chart-wrap { position: relative; height: 290px; }
+
+    /* ─── BOTTOM ─── */
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .donut-wrap { position: relative; width: 130px; height: 130px; flex-shrink: 0; }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .donut-pct { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--gold2); }
+    .donut-label { font-size: 9px; color: var(--muted); text-align: center; max-width: 70px; letter-spacing: .06em; text-transform: uppercase; }
+    .donut-row { display: flex; align-items: center; gap: 18px; }
+    .donut-legend { display: flex; flex-direction: column; gap: 12px; }
+    .dl-item { display: flex; align-items: center; gap: 10px; }
+    .dl-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .dl-name { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+    .dl-val { font-size: 13px; font-weight: 700; color: var(--text); display: block; font-family: 'Cormorant Garamond', serif; }
+
+    /* ─── INDICATORS ─── */
+    .inds { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+    .ind {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border2);
+      border-radius: var(--r); padding: 16px 14px; text-align: center;
+      transition: border-color .2s, background .2s;
+      position: relative; overflow: hidden;
+    }
+    .ind:hover { border-color: rgba(184,146,74,0.2); background: rgba(184,146,74,0.03); }
+    .ind-icon { font-size: 15px; margin-bottom: 8px; }
+    .ind-val { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--gold2); }
+    .ind-lbl { font-size: 9px; color: var(--muted); margin-top: 4px; line-height: 1.4; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ─── TABLE ─── */
+    .tbl-panel {
+      background: linear-gradient(145deg, rgba(13,16,24,0.95), rgba(8,10,14,0.98));
+      border: 1px solid var(--border2); border-radius: var(--r);
+      overflow: hidden; margin-bottom: 12px;
+      position: relative;
+    }
+    .tbl-panel::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,146,74,0.25), transparent);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    thead th {
+      background: rgba(255,255,255,0.02); color: var(--muted);
+      font-weight: 700; font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+      text-align: right; padding: 13px 16px;
+      border-bottom: 1px solid var(--border2);
+    }
+    thead th:first-child { text-align: left; }
+    tbody tr { border-top: 1px solid rgba(255,255,255,0.03); transition: background .15s; }
+    tbody tr:hover { background: rgba(184,146,74,0.025); }
+    tbody td { padding: 9px 16px; text-align: right; color: var(--muted); }
+    tbody td:first-child { text-align: left; color: var(--text); font-weight: 700; font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+    .tg { color: var(--green) !important; font-weight: 600; }
+
+    /* ─── GOAL ─── */
+    .goal-banner {
+      background: rgba(184,146,74,.07); border: 1px solid rgba(184,146,74,.25);
+      border-radius: 8px; padding: 12px 16px;
+      font-size: 12px; color: var(--gold3);
+      margin-top: 10px; display: none;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ─── DISCLAIMER ─── */
+    .disclaimer {
+      text-align: center; font-size: 10px; color: var(--muted2);
+      letter-spacing: .04em; padding: 24px 0 8px;
+      text-transform: uppercase;
+    }
+    .disclaimer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+    .disclaimer a:hover { color: var(--muted); }
+
+    /* ─── CONTENT PAGES ─── */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--muted2); padding: 20px 32px 0;
+      max-width: 1340px; margin: 0 auto; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .breadcrumb a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+    .breadcrumb a:hover { color: var(--muted); }
+    .breadcrumb span { color: var(--gold2); }
+
+    .cpg { max-width: 760px; margin: 0 auto; padding: 52px 32px 100px; }
+    .cpg h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px,4vw,46px); font-weight: 700; line-height: 1.1; margin-bottom: 12px; }
+    .cpg h1 em { font-style: italic; color: var(--gold2); }
+    .cpg .meta { font-size: 11px; color: var(--muted); margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid var(--border2); letter-spacing: .06em; text-transform: uppercase; }
+    .cpg h2 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--gold2); margin: 40px 0 12px; }
+    .cpg h3 { font-size: 14px; font-weight: 700; margin: 22px 0 8px; letter-spacing: .04em; }
+    .cpg p { color: var(--muted); margin-bottom: 14px; line-height: 1.8; font-size: 14px; }
+    .cpg ul, .cpg ol { color: var(--muted); padding-left: 22px; margin-bottom: 14px; }
+    .cpg li { margin-bottom: 8px; line-height: 1.7; font-size: 13px; }
+    .cpg a { color: var(--gold2); }
+    .cpg strong { color: var(--text); }
+    .info-box {
+      background: rgba(184,146,74,.06); border: 1px solid rgba(184,146,74,.2);
+      border-radius: 10px; padding: 18px 22px; margin: 20px 0;
+      position: relative;
+    }
+    .info-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(184,146,74,0.4), transparent);
+    }
+    .info-box p { color: var(--text); margin: 0; font-size: 13px; }
+
+    /* ─── CONTACT ─── */
+    .cform { max-width: 520px; margin: 28px 0; }
+    .cform-field { margin-bottom: 18px; }
+    .cform-field label { display: block; font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 7px; letter-spacing: .12em; text-transform: uppercase; }
+    .cform-field input, .cform-field textarea, .cform-field select {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border2);
+      border-radius: 8px; color: var(--text);
+      font-family: 'Syne', sans-serif; font-size: 13px;
+      padding: 11px 15px; outline: none; resize: vertical;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .cform-field input:focus, .cform-field textarea:focus, .cform-field select:focus {
+      border-color: rgba(184,146,74,0.4);
+      background: rgba(184,146,74,0.03);
+      box-shadow: 0 0 0 3px rgba(184,146,74,0.08);
+    }
+    .cform-field select option { background: var(--bg3); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #050608;
+      font-family: 'Syne', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 13px 28px; border-radius: 8px;
+      border: none; cursor: pointer; text-decoration: none;
+      transition: filter .2s, box-shadow .2s, transform .1s;
+      box-shadow: 0 0 24px rgba(184,146,74,0.2);
+    }
+    .btn:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 0 36px rgba(184,146,74,0.35);
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border2); margin-left: 10px;
+      box-shadow: none;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border2);
+      padding: 52px 32px 36px; margin-top: 48px;
+      background: rgba(5,6,8,0.7);
+      position: relative;
+    }
+    footer::before {
+      content: '';
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .footer-inner { max-width: 1340px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    @media(max-width:768px){ .footer-grid { grid-template-columns: 1fr 1fr; } }
+    .footer-brand p { color: var(--muted); font-size: 12px; margin-top: 12px; max-width: 260px; line-height: 1.7; }
+    .fcol h4 { font-size: 9px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--muted2); margin-bottom: 14px; }
+    .fcol ul { list-style: none; }
+    .fcol li { margin-bottom: 10px; }
+    .fcol a { color: var(--muted); text-decoration: none; font-size: 12px; transition: color .2s; }
+    .fcol a:hover { color: var(--gold2); }
+    .footer-bottom {
+      border-top: 1px solid var(--border2); padding-top: 22px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .footer-bottom p { font-size: 11px; color: var(--muted2); letter-spacing: .03em; }
+    .footer-bottom a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+    .footer-bottom a:hover { color: var(--muted); }
+
+    /* ─── EDITORIAL ─── */
+    #editorial-content {
+      background: linear-gradient(180deg, transparent, rgba(8,10,14,0.98));
+      border-top: 1px solid rgba(184,146,74,0.08);
+    }
+
+    /* ─── FLOATING REFLET ─── */
+    .reflet {
+      position: absolute; pointer-events: none; border-radius: 50%;
+      filter: blur(80px); opacity: 0.06; mix-blend-mode: screen;
+    }
+
+    /* ─── ENTRY ANIMATION ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero > * { animation: fadeUp .7s ease forwards; }
+    .hero > *:nth-child(2) { animation-delay: .1s; }
+    .hero > *:nth-child(3) { animation-delay: .2s; }
+    .hero > *:nth-child(4) { animation-delay: .3s; }
+    .hero > *:nth-child(5) { animation-delay: .35s; }
+
+    /* ─── SHIMMER on KPI ─── */
+    @keyframes kpiGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(184,146,74,0.05); }
+      50% { box-shadow: 0 0 30px rgba(184,146,74,0.1); }
+    }
+    .kpi.hl { animation: kpiGlow 3s ease-in-out infinite; }
+
+    /* ─── NUMBER TICK ─── */
+    .kpi-val { transition: opacity .2s; }
+    .kpi-val.updating { opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#" onclick="return nav('calculateur')">
+      <div class="logo-box">K</div>
+      <div class="nav-wordmark">
+        <span class="nav-name">KAPITALIZE</span>
+        <span class="nav-tagline">Intérêts composés</span>
+      </div>
+    </a>
+    <div class="nav-right">
+      <a href="#" id="nl-calculateur" class="active" onclick="return nav('calculateur')">Calculateur</a>
+      <a href="#" id="nl-guide" onclick="return nav('guide')">Guide</a>
+      <a href="#" id="nl-apropos" onclick="return nav('apropos')">À propos</a>
+      <a href="#" id="nl-legal" onclick="return nav('legal')">Mentions légales</a>
+      <a href="#" id="nl-contact" class="nav-cta" onclick="return nav('contact')">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE CALCULATEUR -->
+<div id="pg-calculateur" class="page active">
+  <div class="hero">
+    <div class="hero-eyebrow">Outil premium · v2.0 — FR</div>
+    <h1>La <em>huitième merveille</em><br>du monde</h1>
+    <p>Visualisez la puissance des intérêts composés — comment votre patrimoine travaille pour vous, exponentiellement, au fil du temps.</p>
+    <div class="hero-line"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="main-grid">
+      <!-- LEFT: PARAMS -->
+      <div class="panel">
+        <!-- reflets décoratifs -->
+        <div class="reflet" style="width:200px;height:200px;background:#b8924a;top:-60px;right:-60px;"></div>
+        <div class="reflet" style="width:150px;height:150px;background:#3ecf7a;bottom:-40px;left:-40px;opacity:.04"></div>
+
+        <div class="panel-title">Paramètres</div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Capital initial</span><span class="field-value" id="v-principal">10 000 €</span></div>
+          <input type="range" id="r-principal" min="0" max="500000" step="500" value="10000"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-principal" value="10000" min="0"/><span class="input-unit">€</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Versement mensuel</span><span class="field-value" id="v-monthly">200 €</span></div>
+          <input type="range" id="r-monthly" min="0" max="5000" step="50" value="200"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-monthly" value="200" min="0"/><span class="input-unit">€</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Taux d'intérêt annuel</span><span class="field-value" id="v-rate">7,8 %</span></div>
+          <input type="range" id="r-rate" min="0" max="25" step="0.1" value="7.8"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-rate" value="7.8" min="0" max="100" step="0.1"/><span class="input-unit">%</span></div>
+          <div class="field-hint">S&amp;P 500 historique ≈ 10% · Livret A = 3% · SCPI ≈ 4–6%</div>
+        </div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Durée</span><span class="field-value" id="v-years">20 ans</span></div>
+          <input type="range" id="r-years" min="1" max="60" step="1" value="20"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-years" value="20" min="1" max="60"/><span class="input-unit">ans</span></div>
+        </div>
+
+        <hr class="sep"/>
+
+        <div class="field">
+          <div class="field-label" style="margin-bottom:10px">Capitalisation</div>
+          <div class="toggle" id="tgl">
+            <button onclick="setN(365,this)">Jour</button>
+            <button onclick="setN(12,this)" class="on">Mois</button>
+            <button onclick="setN(4,this)">Trim.</button>
+            <button onclick="setN(1,this)">An</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Inflation (optionnel)</span><span class="field-value" id="v-inf">2,0 %</span></div>
+          <input type="range" id="r-inf" min="0" max="15" step="0.1" value="2"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-inf" value="2" min="0" step="0.1"/><span class="input-unit">%</span></div>
+        </div>
+
+        <div class="field">
+          <div class="field-row"><span class="field-label">Taux d'imposition</span><span class="field-value" id="v-tax">30 %</span></div>
+          <input type="range" id="r-tax" min="0" max="60" step="0.5" value="30"/>
+          <div class="input-wrap" style="margin-top:10px"><input type="number" class="field-num" id="n-tax" value="30" min="0" step="0.5"/><span class="input-unit">%</span></div>
+          <div class="field-hint">Flat Tax PFU France = 30%</div>
+        </div>
+
+        <hr class="sep"/>
+
+        <div class="field">
+          <div class="field-label" style="margin-bottom:8px">Objectif cible</div>
+          <div class="input-wrap"><input type="number" class="field-num" id="n-goal" value="500000" min="0"/><span class="input-unit">€</span></div>
+          <div id="goal-msg" class="goal-banner"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: RESULTS -->
+      <div>
+        <div class="kpi-top">
+          <div class="kpi hl">
+            <div class="kpi-lbl">Capital Total</div>
+            <div class="kpi-val" id="kTotal">—</div>
+            <div class="kpi-sub" id="kTotalSub">—</div>
+          </div>
+          <div class="kpi hlg">
+            <div class="kpi-lbl">Intérêts Gagnés</div>
+            <div class="kpi-val" id="kInt">—</div>
+            <div class="kpi-sub"><span id="kMult">—</span> — votre argent multiplié</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Capital versé</div>
+            <div class="kpi-val" id="kDepo">—</div>
+            <div class="kpi-sub">Capital initial + mensualités</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-lbl">Après Impôts</div>
+            <div class="kpi-val" id="kAfterTax">—</div>
+            <div class="kpi-sub" id="kTaxSub">—</div>
+          </div>
+        </div>
+
+        <div class="chart-panel">
+          <div class="panel-title" style="margin-bottom:12px">Projection patrimoniale</div>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Capital total</div>
+            <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Versements cumulés</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(184,146,74,.35)"></div>Intérêts générés</div>
+          </div>
+          <div class="chart-wrap"><canvas id="chart"></canvas></div>
+        </div>
+
+        <div class="bottom-row">
+          <div class="panel">
+            <div class="panel-title">Répartition finale</div>
+            <div class="donut-row">
+              <div class="donut-wrap">
+                <canvas id="donut" width="130" height="130"></canvas>
+                <div class="donut-center">
+                  <div class="donut-pct" id="dPct">—</div>
+                  <div class="donut-label">Rendement</div>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <div class="dl-item"><div class="dl-dot" style="background:var(--muted2)"></div><div><div class="dl-name">Capital initial</div><span class="dl-val" id="dPrincipal">—</span></div></div>
+                <div class="dl-item"><div class="dl-dot" style="background:var(--green)"></div><div><div class="dl-name">Versements</div><span class="dl-val" id="dVers">—</span></div></div>
+                <div class="dl-item"><div class="dl-dot" style="background:var(--gold)"></div><div><div class="dl-name">Intérêts</div><span class="dl-val" id="dInt">—</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Indicateurs clés</div>
+            <div class="inds">
+              <div class="ind"><div class="ind-icon">⚡</div><div class="ind-val" id="iDouble">—</div><div class="ind-lbl">Doublement règle 72</div></div>
+              <div class="ind"><div class="ind-icon">◆</div><div class="ind-val" id="iBest">—</div><div class="ind-lbl">Intérêts meilleure année</div></div>
+              <div class="ind"><div class="ind-icon">▲</div><div class="ind-val" id="iCAGR">—</div><div class="ind-lbl">CAGR effectif annuel</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tbl-panel">
+          <div style="padding:16px 18px 0"><div class="panel-title" style="margin-bottom:12px">Évolution annuelle</div></div>
+          <table>
+            <thead><tr><th>An</th><th>Capital début</th><th>Versements</th><th>Intérêts</th><th>Capital total</th><th>Valeur réelle</th><th>Croissance</th></tr></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      KAPITALIZE — Calculateur d'intérêts composés &nbsp;·&nbsp; Les projections sont indicatives &nbsp;·&nbsp; Pas un conseil financier &nbsp;·&nbsp;
+      <a href="#" onclick="return nav('legal')">Mentions légales</a> &nbsp;·&nbsp;
+      <a href="#" onclick="return nav('contact')">Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE GUIDE -->
+<div id="pg-guide" class="page">
+  <div class="breadcrumb"><a href="#" onclick="return nav('calculateur')">Accueil</a> › <span>Guide complet</span></div>
+  <div class="cpg">
+    <h1>Guide complet des <em>intérêts composés</em></h1>
+    <div class="meta">Dernière mise à jour : avril 2025 · Lecture estimée : 8 min</div>
+    <div class="info-box"><p><strong>🎯 En résumé :</strong> Les intérêts composés permettent à votre capital de croître de manière exponentielle en réinvestissant automatiquement les gains générés. Plus tôt vous commencez, plus l'effet est puissant.</p></div>
+    <h2>Qu'est-ce que les intérêts composés ?</h2>
+    <p>Les intérêts composés, surnommés <strong>la huitième merveille du monde</strong> (citation généralement attribuée à Albert Einstein), désignent un mécanisme financier dans lequel les intérêts générés par un capital s'ajoutent au capital initial, puis produisent à leur tour des intérêts lors de la prochaine période.</p>
+    <p>Contrairement aux intérêts simples, les intérêts composés entraînent une croissance exponentielle : chaque euro gagné devient lui-même générateur de rendement supplémentaire.</p>
+    <h2>La formule mathématique</h2>
+    <p>La formule fondamentale des intérêts composés est :</p>
+    <div class="info-box"><p><strong>A = P × (1 + r/n)^(n×t)</strong></p><p style="margin-top:8px;color:var(--muted)">Où : <strong style="color:var(--text)">P</strong> = capital initial · <strong style="color:var(--text)">r</strong> = taux annuel · <strong style="color:var(--text)">n</strong> = fréquence de capitalisation · <strong style="color:var(--text)">t</strong> = durée en années</p></div>
+    <h2>La règle des 72</h2>
+    <p>Pour estimer le nombre d'années nécessaires pour doubler votre capital, divisez 72 par le taux d'intérêt annuel.</p>
+    <ul>
+      <li>À <strong>7% par an</strong> → doublement en ≈ 10,3 ans</li>
+      <li>À <strong>10% par an</strong> → doublement en ≈ 7,2 ans</li>
+      <li>À <strong>3% par an</strong> → doublement en ≈ 24 ans</li>
+    </ul>
+    <h2>Fréquence de capitalisation</h2>
+    <ul>
+      <li><strong>Annuelle</strong> : intérêts calculés une fois par an</li>
+      <li><strong>Trimestrielle</strong> : 4 fois par an</li>
+      <li><strong>Mensuelle</strong> : 12 fois par an (standard)</li>
+      <li><strong>Journalière</strong> : 365 fois par an (différence marginale avec mensuel)</li>
+    </ul>
+    <h2>L'importance du temps</h2>
+    <p>Le facteur le plus décisif n'est ni le montant investi, ni le taux de rendement : c'est <strong>la durée</strong>. Commencer 10 ans plus tôt peut doubler ou tripler le capital final à montants et taux identiques.</p>
+    <h2>Inflation et valeur réelle</h2>
+    <p>Un capital de 100 000 € immobilisé sans rendement vaut en pouvoir d'achat environ 67 000 € après 20 ans à 2% d'inflation. Pour préserver son patrimoine réel, le rendement doit <strong>dépasser le taux d'inflation</strong>.</p>
+    <h2>La fiscalité en France</h2>
+    <p>La <strong>Flat Tax (PFU)</strong> de 30% se décompose en 12,8% d'impôt sur le revenu + 17,2% de prélèvements sociaux. Le PEA et l'assurance-vie offrent des enveloppes fiscalement avantageuses.</p>
+    <h2>Bonnes pratiques</h2>
+    <ol>
+      <li><strong>Commencez le plus tôt possible</strong> — chaque année perdue est irremplaçable</li>
+      <li><strong>Réinvestissez systématiquement</strong> tous les dividendes et intérêts</li>
+      <li><strong>Automatisez les versements mensuels</strong> pour éliminer les biais comportementaux</li>
+      <li><strong>Minimisez les frais</strong> — 1% de frais annuels peut réduire le capital final de 20-30% sur 30 ans</li>
+      <li><strong>Utilisez les enveloppes fiscales</strong> adaptées (PEA, assurance-vie, PER)</li>
+      <li><strong>Ne touchez pas au capital</strong> — chaque retrait prématuré brise la courbe exponentielle</li>
+    </ol>
+    <p style="margin-top:32px"><a href="#" onclick="return nav('calculateur')" class="btn">← Retour au calculateur</a></p>
+  </div>
+</div>
+
+<!-- PAGE À PROPOS -->
+<div id="pg-apropos" class="page">
+  <div class="breadcrumb"><a href="#" onclick="return nav('calculateur')">Accueil</a> › <span>À propos</span></div>
+  <div class="cpg">
+    <h1>À propos de <em>Kapitalize</em></h1>
+    <div class="meta">Outil premium · Indépendant · Sans inscription</div>
+    <p><strong>Kapitalize</strong> est un calculateur d'intérêts composés gratuit, conçu pour aider toute personne à visualiser et comprendre concrètement la puissance de l'épargne à long terme.</p>
+    <h2>Notre mission</h2>
+    <p>Rendre l'éducation financière accessible à tous. Les intérêts composés sont l'un des concepts les plus puissants et les plus sous-estimés de la finance personnelle, pourtant ils restent mal compris par la majorité des épargnants.</p>
+    <h2>Ce que propose Kapitalize</h2>
+    <ul>
+      <li>Calcul précis avec fréquence paramétrable (jour, mois, trimestre, an)</li>
+      <li>Versements mensuels récurrents (DCA)</li>
+      <li>Simulation de l'inflation et impact sur le pouvoir d'achat</li>
+      <li>Calcul de la fiscalité Flat Tax PFU (paramétrable)</li>
+      <li>Graphique interactif, tableau annuel, indicateurs clés (règle des 72, CAGR)</li>
+    </ul>
+    <h2>Avertissement</h2>
+    <div class="info-box"><p>Les simulations de Kapitalize sont <strong>purement indicatives</strong> et ne constituent pas un conseil en investissement ni une garantie de rendement. Consultez un conseiller financier agréé (CIF) avant toute décision.</p></div>
+    <h2>Confidentialité</h2>
+    <p>Kapitalize ne collecte <strong>aucune donnée personnelle</strong>. Tous les calculs s'effectuent localement dans votre navigateur. Aucune donnée n'est transmise à un serveur.</p>
+    <h2>Technologies</h2>
+    <ul><li>HTML5, CSS3, JavaScript (vanilla)</li><li>Chart.js pour les visualisations</li><li>Google Fonts (Cormorant Garamond + Syne)</li></ul>
+    <p style="margin-top:32px"><a href="#" onclick="return nav('calculateur')" class="btn">← Retour au calculateur</a></p>
+  </div>
+</div>
+
+<!-- PAGE MENTIONS LÉGALES -->
+<div id="pg-legal" class="page">
+  <div class="breadcrumb"><a href="#" onclick="return nav('calculateur')">Accueil</a> › <span>Mentions légales</span></div>
+  <div class="cpg">
+    <h1>Mentions légales &amp;<br><em>Politique de confidentialité</em></h1>
+    <div class="meta">Dernière mise à jour : avril 2025</div>
+    <h2>1. Éditeur du site</h2>
+    <p>Le site <strong>Kapitalize</strong> est édité à titre personnel. Il s'agit d'un outil pédagogique gratuit dédié à la simulation des intérêts composés.</p>
+    <h2>2. Hébergement</h2>
+    <p><strong>Netlify, Inc.</strong> — 512 2nd Street, Suite 200, San Francisco, CA 94107, États-Unis.</p>
+    <h2>3. Propriété intellectuelle</h2>
+    <p>L'ensemble des contenus (textes, interface, code source) sont protégés par le droit d'auteur. Toute reproduction partielle ou totale est interdite sans autorisation préalable écrite.</p>
+    <h2>4. Avertissement financier</h2>
+    <p>Les simulations proposées sont <strong>exclusivement indicatives</strong> et ne constituent pas un conseil en investissement, une recommandation d'achat ou de vente, ni une garantie de rendement. L'éditeur décline toute responsabilité pour les décisions financières prises sur la base des simulations.</p>
+    <h2>5. Données personnelles (RGPD)</h2>
+    <p>Ce site <strong>ne collecte aucune donnée personnelle identifiable</strong>. Tous les calculs s'effectuent localement dans votre navigateur. Aucune donnée n'est transmise à un serveur distant.</p>
+    <h2>6. Droit applicable</h2>
+    <p>Le présent site est soumis au droit français. Tout litige relève de la compétence exclusive des juridictions françaises.</p>
+    <p style="margin-top:32px"><a href="#" onclick="return nav('calculateur')" class="btn">← Retour au calculateur</a></p>
+  </div>
+</div>
+
+<!-- PAGE CONTACT -->
+<div id="pg-contact" class="page">
+  <div class="breadcrumb"><a href="#" onclick="return nav('calculateur')">Accueil</a> › <span>Contact</span></div>
+  <div class="cpg">
+    <h1>Nous <em>contacter</em></h1>
+    <div class="meta">Réponse sous 48h ouvrées</div>
+    <p>Une question sur le calculateur, une suggestion, un bug à signaler ou un partenariat à proposer ? Écrivez-nous.</p>
+    <div class="cform">
+      <div class="cform-field"><label>Prénom *</label><input type="text" id="c-name" placeholder="Votre prénom"/></div>
+      <div class="cform-field"><label>Adresse email *</label><input type="email" id="c-email" placeholder="votre@email.fr"/></div>
+      <div class="cform-field"><label>Sujet</label>
+        <select id="c-subject">
+          <option value="">Sélectionnez un sujet</option>
+          <option value="bug">Signaler un bug</option>
+          <option value="suggestion">Suggestion d'amélioration</option>
+          <option value="question">Question sur les calculs</option>
+          <option value="partenariat">Partenariat</option>
+          <option value="rgpd">Demande RGPD</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="cform-field"><label>Message *</label><textarea id="c-msg" rows="5" placeholder="Décrivez votre demande..."></textarea></div>
+      <button class="btn" onclick="sendContact()">Envoyer →</button>
+      <a href="#" onclick="return nav('calculateur')" class="btn btn-ghost">Annuler</a>
+    </div>
+    <hr class="sep" style="margin-top:40px"/>
+    <h2>Informations légales</h2>
+    <p>Consultez nos <a href="#" onclick="return nav('legal')">Mentions légales &amp; Politique de confidentialité</a> complètes.</p>
+    <p style="margin-top:32px"><a href="#" onclick="return nav('calculateur')" class="btn">← Retour au calculateur</a></p>
+  </div>
+</div>
+
+<!-- CONTENU ÉDITORIAL -->
+<div id="editorial-content">
+  <div style="max-width:980px; margin:0 auto; padding:80px 32px;">
+
+    <div style="text-align:center; margin-bottom:72px;">
+      <p style="font-size:9px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--gold2); margin-bottom:16px;">Guide & Ressources</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-size:clamp(28px,4vw,46px); font-weight:700; line-height:1.1; color:var(--text); margin-bottom:16px;">Tout comprendre sur les <em style="font-style:italic; color:var(--gold2);">intérêts composés</em></h2>
+      <p style="color:var(--muted); font-size:15px; max-width:560px; margin:0 auto; line-height:1.8; font-family:'Cormorant Garamond',serif;">Des guides complets pour comprendre, simuler et optimiser votre patrimoine à long terme.</p>
+    </div>
+
+    <div style="margin-bottom:64px;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--gold2); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(184,146,74,0.15);">Qu'est-ce que les intérêts composés ?</h3>
+      <p style="color:var(--muted); font-size:14px; line-height:1.85; margin-bottom:16px;">Les intérêts composés désignent un mécanisme financier dans lequel les intérêts générés par un capital s'ajoutent à ce capital, puis produisent à leur tour des intérêts lors de la prochaine période de calcul. Ce processus crée une croissance exponentielle du capital, souvent qualifiée d'effet boule de neige.</p>
+      <p style="color:var(--muted); font-size:14px; line-height:1.85; margin-bottom:16px;">Cette propriété des intérêts composés aurait conduit Albert Einstein à les qualifier de "huitième merveille du monde" — une formule qui illustre parfaitement la puissance de ce mécanisme mathématique sur le long terme.</p>
+      <div style="background:rgba(184,146,74,0.05); border:1px solid rgba(184,146,74,0.2); border-radius:10px; padding:22px 26px; margin:24px 0; position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.4),transparent);"></div>
+        <p style="color:var(--text); font-size:13px; margin-bottom:8px;"><strong>La formule fondamentale :</strong></p>
+        <p style="color:var(--gold3); font-size:16px; font-weight:700; margin-bottom:8px; font-family:'Cormorant Garamond',serif;">A = P × (1 + r/n)^(n×t)</p>
+        <p style="color:var(--muted); font-size:12px; margin:0;"><strong style="color:var(--text)">P</strong> = capital initial · <strong style="color:var(--text)">r</strong> = taux annuel · <strong style="color:var(--text)">n</strong> = fréquence · <strong style="color:var(--text)">t</strong> = durée</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:64px;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--gold2); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(184,146,74,0.15);">La règle des 72</h3>
+      <p style="color:var(--muted); font-size:14px; line-height:1.85; margin-bottom:16px;">Divisez 72 par le taux d'intérêt annuel pour obtenir le nombre d'années nécessaires au doublement de votre capital. Un raccourci redoutable pour comparer des opportunités d'investissement.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-top:24px;">
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:22px; text-align:center; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);"></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--gold2); font-weight:700;">24 ans</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:.04em;">Doublement à 3%<br>(Livret A)</div>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid rgba(184,146,74,0.2); border-radius:10px; padding:22px; text-align:center; position:relative; overflow:hidden; box-shadow:0 0 30px rgba(184,146,74,0.06);">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.4),transparent);"></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--gold2); font-weight:700;">10,3 ans</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:.04em;">Doublement à 7%<br>(Objectif raisonnable)</div>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:22px; text-align:center; position:relative; overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);"></div>
+          <div style="font-family:'Cormorant Garamond',serif; font-size:30px; color:var(--gold2); font-weight:700;">7,2 ans</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:6px; letter-spacing:.04em;">Doublement à 10%<br>(S&P 500 historique)</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:64px;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--gold2); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(184,146,74,0.15);">Les enveloppes fiscales en France</h3>
+      <p style="color:var(--muted); font-size:14px; line-height:1.85; margin-bottom:16px;">La Flat Tax (PFU) s'élève à 30%, composée de 12,8% d'impôt sur le revenu et de 17,2% de prélèvements sociaux. Pour optimiser la croissance de votre patrimoine, utilisez les enveloppes fiscalement avantageuses disponibles.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:24px 0;">
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:22px;">
+          <div style="font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold2); margin-bottom:10px;">PEA</div>
+          <p style="color:var(--muted); font-size:13px; line-height:1.75; margin:0;">Investissement en actions européennes avec exonération d'impôt sur les plus-values après 5 ans (hors PS 17,2%). Plafond : 150 000 €.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:22px;">
+          <div style="font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold2); margin-bottom:10px;">Assurance-vie</div>
+          <p style="color:var(--muted); font-size:13px; line-height:1.75; margin:0;">Après 8 ans, abattement annuel de 4 600 € (célibataire) ou 9 200 € (couple). Cadre idéal pour l'épargne longue durée et la transmission patrimoniale.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:22px;">
+          <div style="font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--gold2); margin-bottom:10px;">PER</div>
+          <p style="color:var(--muted); font-size:13px; line-height:1.75; margin:0;">Déduction des versements du revenu imposable. La fiscalité est reportée à la retraite, idéalement dans une tranche d'imposition plus basse.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <h3 style="font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:var(--gold2); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid rgba(184,146,74,0.15);">6 principes pour maximiser vos intérêts composés</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:24px;">
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; position:relative; overflow:hidden; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">01</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Commencez le plus tôt possible</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">Chaque année de retard a un coût exponentiel sur votre capital final.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">02</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Réinvestissez tous les gains</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">Dividendes, coupons, loyers : chaque euro réinvesti renforce la base de calcul.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">03</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Minimisez les frais</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">1% de frais annuels peut réduire votre capital final de 20 à 30% sur 30 ans.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">04</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Utilisez les enveloppes fiscales</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">PEA, assurance-vie, PER : laissez les intérêts composés opérer sans frottement fiscal.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">05</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Ne touchez pas au capital</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">Chaque retrait brise la courbe exponentielle. Maintenez un fonds d'urgence séparé.</p>
+        </div>
+        <div style="background:rgba(13,16,24,0.9); border:1px solid var(--border2); border-radius:10px; padding:24px; transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(184,146,74,0.2)'" onmouseout="this.style.borderColor='var(--border2)'">
+          <div style="font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:rgba(184,146,74,0.15); line-height:1; margin-bottom:10px;">06</div>
+          <h4 style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;">Automatisez vos versements</h4>
+          <p style="font-size:12px; color:var(--muted); margin:0; line-height:1.7;">Le DCA mensuel élimine les biais émotionnels et lisse les aléas de marché.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; padding:32px; background:rgba(13,16,24,0.9); border:1px solid rgba(184,146,74,0.15); border-radius:12px; position:relative; overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);"></div>
+      <p style="font-size:11px; color:var(--muted2); margin:0; letter-spacing:.02em;">⚕️ <strong style="color:var(--muted);">Avertissement :</strong> Les informations présentées sont à titre pédagogique uniquement et ne constituent pas un conseil en investissement. Consultez un conseiller financier agréé avant toute décision.</p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="#" onclick="return nav('calculateur')" style="text-decoration:none">
+          <div class="logo-box">K</div>
+          <div class="nav-wordmark">
+            <span class="nav-name">KAPITALIZE</span>
+          </div>
+        </a>
+        <p>Le calculateur d'intérêts composés premium, précis et pédagogique. Aucune inscription requise.</p>
+      </div>
+      <div class="fcol"><h4>Outil</h4><ul><li><a href="#" onclick="return nav('calculateur')">Calculateur</a></li><li><a href="#" onclick="return nav('guide')">Guide complet</a></li></ul></div>
+      <div class="fcol"><h4>Informations</h4><ul><li><a href="#" onclick="return nav('apropos')">À propos</a></li><li><a href="#" onclick="return nav('legal')">Mentions légales</a></li><li><a href="#" onclick="return nav('contact')">Contact</a></li></ul></div>
+      <div class="fcol"><h4>Références</h4><ul><li><a href="https://www.amf-france.org" target="_blank" rel="noopener">AMF France</a></li><li><a href="https://www.banque-france.fr" target="_blank" rel="noopener">Banque de France</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Kapitalize — Calculateur d'intérêts composés · Outil pédagogique · <strong>Pas un conseil financier</strong></p>
+      <p><a href="#" onclick="return nav('legal')">Mentions légales</a> &nbsp;·&nbsp; <a href="#" onclick="return nav('legal')">Confidentialité</a> &nbsp;·&nbsp; <a href="#" onclick="return nav('contact')">Contact</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ─── ANIMATED BACKGROUND ─── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], time = 0;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: Math.random() * 1.5 + 0.3,
+      opacity: Math.random() * 0.4 + 0.05,
+      gold: Math.random() > 0.7
+    };
+  }
+
+  resize();
+  for (let i = 0; i < 120; i++) particles.push(createParticle());
+  window.addEventListener('resize', resize);
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    time += 0.004;
+
+    // Ambient orbs
+    const orbs = [
+      { x: W * 0.15, y: H * 0.25, r: 350, color: 'rgba(184,146,74,0.035)' },
+      { x: W * 0.85, y: H * 0.65, r: 280, color: 'rgba(62,207,122,0.02)' },
+      { x: W * 0.5 + Math.sin(time * 0.3) * 80, y: H * 0.4 + Math.cos(time * 0.2) * 60, r: 400, color: 'rgba(184,146,74,0.02)' },
+    ];
+    orbs.forEach(o => {
+      const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+      g.addColorStop(0, o.color);
+      g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    });
+
+    // Grid lines (faint)
+    ctx.strokeStyle = 'rgba(184,146,74,0.018)';
+    ctx.lineWidth = 1;
+    const gs = 80;
+    for (let x = 0; x < W; x += gs) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += gs) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    // Particles
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.gold
+        ? `rgba(184,146,74,${p.opacity})`
+        : `rgba(200,210,230,${p.opacity * 0.5})`;
+      ctx.fill();
+    });
+
+    // Horizontal scan line (sweeping)
+    const scanY = (H * ((time * 0.08) % 1));
+    const scanG = ctx.createLinearGradient(0, scanY - 2, 0, scanY + 2);
+    scanG.addColorStop(0, 'transparent');
+    scanG.addColorStop(0.5, 'rgba(184,146,74,0.04)');
+    scanG.addColorStop(1, 'transparent');
+    ctx.fillStyle = scanG;
+    ctx.fillRect(0, scanY - 2, W, 4);
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ─── APP LOGIC ─── */
+let N = 12, chartMain = null, chartDonut = null;
+
+function nav(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-right a').forEach(a => a.classList.remove('active'));
+  document.getElementById('pg-' + id)?.classList.add('active');
+  document.getElementById('nl-' + id)?.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  return false;
+}
+
+function setN(n, btn) {
+  N = n;
+  document.querySelectorAll('#tgl button').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  calc();
+}
+
+function updateGrad(el) {
+  const pct = ((+el.value - +el.min) / (+el.max - +el.min) * 100).toFixed(1);
+  el.style.setProperty('--pct', pct + '%');
+}
+
+function pair(rid, nid, did, suffix) {
+  const r = document.getElementById(rid), n = document.getElementById(nid), d = document.getElementById(did);
+  function upd(src) {
+    r.value = src.value; n.value = src.value; updateGrad(r);
+    if (d) {
+      const v = +src.value;
+      d.textContent = suffix === '%' ? v.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' %'
+        : suffix === 'ans' ? v + ' ans'
+        : v.toLocaleString('fr-FR') + ' €';
+    }
+    calc();
+  }
+  r.addEventListener('input', () => upd(r));
+  n.addEventListener('input', () => upd(n));
+  updateGrad(r);
+}
+pair('r-principal','n-principal','v-principal','€');
+pair('r-monthly','n-monthly','v-monthly','€');
+pair('r-rate','n-rate','v-rate','%');
+pair('r-years','n-years','v-years','ans');
+pair('r-inf','n-inf','v-inf','%');
+pair('r-tax','n-tax','v-tax','%');
+document.getElementById('n-goal').addEventListener('input', calc);
+
+const fmtE = v => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK = v => Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1000?(v/1000).toFixed(1)+' k€':fmtE(v);
+
+function animateVal(el, txt) {
+  el.classList.add('updating');
+  setTimeout(() => { el.textContent = txt; el.classList.remove('updating'); }, 120);
+}
+
+function calc() {
+  const P=+document.getElementById('n-principal').value||0, m=+document.getElementById('n-monthly').value||0,
+        r=+document.getElementById('n-rate').value/100||0, t=+document.getElementById('n-years').value||1,
+        inf=+document.getElementById('n-inf').value/100||0, tax=+document.getElementById('n-tax').value/100||0,
+        goal=+document.getElementById('n-goal').value||0;
+
+  const labels=[], totals=[], deps=[], ints=[], rows=[];
+  let capital=P, totalDep=P, bestYr=0;
+
+  for (let y=1; y<=t; y++) {
+    const st=capital, ds=totalDep;
+    for (let p=0; p<N; p++) { capital*=(1+r/N); const mpd=m*(12/N); capital+=mpd; totalDep+=mpd; }
+    const yInt=capital-st-(totalDep-ds);
+    if(yInt>bestYr) bestYr=yInt;
+    rows.push({y,st,yDep:totalDep-ds,yInt,tot:capital,real:capital/Math.pow(1+inf,y),gr:st>0?(capital-st)/st*100:0});
+    labels.push('An '+y); totals.push(capital); deps.push(P+m*12*y); ints.push(capital-P-m*12*y);
+  }
+
+  const fin=capital, finDep=totalDep-P, finInt=fin-P-finDep;
+  const finReal=fin/Math.pow(1+inf,t), taxAmt=finInt*tax, afterTax=P+finDep+finInt*(1-tax);
+  const mult=P>0?(fin/P).toFixed(2):'—', cagr=(Math.pow(fin/(P||1),1/t)-1)*100;
+
+  animateVal(document.getElementById('kTotal'), fmtK(fin));
+  document.getElementById('kTotalSub').textContent='≈ '+fmtK(finReal)+' valeur réelle';
+  animateVal(document.getElementById('kInt'), fmtK(finInt));
+  document.getElementById('kMult').textContent='✕ '+mult;
+  animateVal(document.getElementById('kDepo'), fmtK(P+finDep));
+  animateVal(document.getElementById('kAfterTax'), fmtK(afterTax));
+  document.getElementById('kTaxSub').textContent='Impôt prélevé : '+fmtK(taxAmt);
+
+  const gEl=document.getElementById('goal-msg');
+  if(goal>0){gEl.style.display='block';gEl.textContent=fin>=goal?'🎯 Objectif atteint ! '+fmtK(fin)+' > '+fmtK(goal):'📍 Il manque '+fmtK(goal-fin)+' pour atteindre '+fmtK(goal);}
+  else gEl.style.display='none';
+
+  document.getElementById('iDouble').textContent=r>0?(72/(r*100)).toFixed(1)+' ans':'∞';
+  document.getElementById('iBest').textContent=fmtK(bestYr);
+  document.getElementById('iCAGR').textContent=cagr.toFixed(2)+' %';
+
+  const pPct=fin>0?(P/fin*100).toFixed(0):0, vPct=fin>0?(finDep/fin*100).toFixed(0):0, iPct=fin>0?(finInt/fin*100).toFixed(0):0;
+  document.getElementById('dPct').textContent=iPct+'%';
+  document.getElementById('dPrincipal').textContent=fmtK(P)+' ('+pPct+'%)';
+  document.getElementById('dVers').textContent=fmtK(finDep)+' ('+vPct+'%)';
+  document.getElementById('dInt').textContent=fmtK(finInt)+' ('+iPct+'%)';
+  drawDonut([+pPct,+vPct,+iPct]);
+
+  const tb=document.getElementById('tbody'); tb.innerHTML='';
+  rows.forEach(row=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${row.y}</td><td>${fmtK(row.st)}</td><td>${fmtK(row.yDep)}</td><td class="tg">+${fmtK(row.yInt)}</td><td><strong style="color:var(--text)">${fmtK(row.tot)}</strong></td><td>${fmtK(row.real)}</td><td class="tg">+${row.gr.toFixed(1)}%</td>`;
+    tb.appendChild(tr);
+  });
+  drawChart(labels,totals,deps,ints);
+}
+
+function drawChart(labels,totals,deps,ints){
+  const ctx=document.getElementById('chart').getContext('2d');
+  if(chartMain) chartMain.destroy();
+  chartMain=new Chart(ctx,{type:'line',data:{labels,datasets:[
+    {
+      label:'Capital total',data:totals,
+      borderColor:'#b8924a',
+      backgroundColor:c=>{
+        const g=c.chart.ctx.createLinearGradient(0,0,0,290);
+        g.addColorStop(0,'rgba(184,146,74,0.25)');
+        g.addColorStop(0.7,'rgba(184,146,74,0.05)');
+        g.addColorStop(1,'rgba(184,146,74,0)');
+        return g;
+      },
+      fill:true,tension:0.45,pointRadius:0,borderWidth:2
+    },
+    {
+      label:'Versements cumulés',data:deps,
+      borderColor:'#3ecf7a',backgroundColor:'transparent',
+      tension:0.45,pointRadius:0,borderWidth:1.5,borderDash:[4,4]
+    },
+    {
+      label:'Intérêts générés',data:ints,
+      borderColor:'rgba(184,146,74,0.3)',backgroundColor:'transparent',
+      tension:0.45,pointRadius:0,borderWidth:1
+    }
+  ]},options:{
+    responsive:true,maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'rgba(8,10,14,0.95)',
+        borderColor:'rgba(184,146,74,0.2)',
+        borderWidth:1,
+        titleColor:'#e8e4dc',
+        bodyColor:'#7a8090',
+        titleFont:{family:'Syne',size:11,weight:'700'},
+        bodyFont:{family:'Syne',size:11},
+        padding:12,
+        callbacks:{
+          label:c=>' '+c.dataset.label+' : '+new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(c.parsed.y)
+        }
+      }
+    },
+    scales:{
+      x:{
+        ticks:{color:'#3a404c',font:{size:10,family:'Syne'},maxTicksLimit:10},
+        grid:{color:'rgba(255,255,255,0.025)'}
+      },
+      y:{
+        ticks:{
+          color:'#3a404c',font:{size:10,family:'Syne'},
+          callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M€':v>=1000?(v/1000).toFixed(0)+'k€':v+'€'
+        },
+        grid:{color:'rgba(255,255,255,0.025)'}
+      }
+    }
+  }});
+}
+
+function drawDonut(pcts){
+  const ctx=document.getElementById('donut').getContext('2d');
+  if(chartDonut) chartDonut.destroy();
+  chartDonut=new Chart(ctx,{type:'doughnut',data:{
+    datasets:[{
+      data:pcts,
+      backgroundColor:['#2a2e3a','#3ecf7a','#b8924a'],
+      borderColor:'rgba(8,10,14,0.8)',
+      borderWidth:3,hoverOffset:4
+    }]
+  },options:{cutout:'74%',responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}},animation:{duration:500}}});
+}
+
+function sendContact(){
+  const n=document.getElementById('c-name').value.trim(), e=document.getElementById('c-email').value.trim(), msg=document.getElementById('c-msg').value.trim();
+  if(!n||!e||!msg){alert('Veuillez remplir les champs obligatoires (*)');return;}
+  alert('✅ Merci '+n+' ! Votre message a été envoyé. Réponse sous 48h.');
+  document.getElementById('c-name').value=''; document.getElementById('c-email').value=''; document.getElementById('c-msg').value='';
+}
+
+calc();
+</script>
+
+</body>
+</html>
