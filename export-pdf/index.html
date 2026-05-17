@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Export PDF Premium — Rapport patrimonial Kapitalize</title>
+  <meta name="description" content="Générez un rapport patrimonial PDF professionnel signé Kapitalize. Exportez votre simulation d'intérêts composés en document imprimable de qualité premium."/>
+  <meta name="keywords" content="rapport pdf investissement, export pdf patrimoine, rapport intérêts composés, document bilan financier, simulation pdf"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/export-pdf/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.1) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:18px;border:1px solid rgba(184,146,74,0.2);padding:6px 16px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,54px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:500px;margin:0 auto;}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 32px 80px;}
+    .main-grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start;}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+    .panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;}
+    .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .panel-title{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .panel-title::before{content:'';width:14px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+    .field{margin-bottom:14px;}
+    .field-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .field-label{font-size:11px;color:var(--muted);font-weight:600;}
+    .field-value{font-size:13px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    .field-num{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:9px 36px 9px 12px;width:100%;outline:none;margin-top:7px;-moz-appearance:textfield;}
+    .field-num::-webkit-inner-spin-button{display:none;}
+    .field-num:focus{border-color:rgba(184,146,74,0.4);background:rgba(184,146,74,0.03);}
+    .input-wrap{position:relative;}
+    .input-unit{position:absolute;right:11px;top:50%;transform:translateY(-65%);color:var(--muted2);font-size:11px;pointer-events:none;font-weight:600;}
+    .sep{border:none;border-top:1px solid rgba(255,255,255,0.04);margin:14px 0;}
+    .text-input{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;padding:9px 12px;width:100%;outline:none;transition:border-color .2s;}
+    .text-input:focus{border-color:rgba(184,146,74,0.4);}
+    /* PREVIEW */
+    .preview-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;}
+    /* PDF PREVIEW AREA */
+    .pdf-preview{background:#fff;color:#0a0a0a;font-family:'Cormorant Garamond',Georgia,serif;padding:0;border-radius:0;position:relative;box-shadow:0 8px 64px rgba(0,0,0,0.6);}
+    .pdf-page{padding:48px 52px;page-break-after:always;min-height:297mm;position:relative;}
+    .pdf-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid #b8924a;}
+    .pdf-brand{display:flex;align-items:center;gap:12px;}
+    .pdf-logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#b8924a,#f0cc80);display:grid;place-items:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+    .pdf-brand-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:#0a0a0a;letter-spacing:.05em;}
+    .pdf-brand-tag{font-family:Arial,sans-serif;font-size:10px;color:#888;margin-top:2px;letter-spacing:.1em;text-transform:uppercase;}
+    .pdf-meta{text-align:right;font-family:Arial,sans-serif;font-size:10px;color:#888;}
+    .pdf-title-section{margin-bottom:36px;}
+    .pdf-report-tag{font-family:Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8924a;margin-bottom:8px;}
+    .pdf-report-title{font-size:32px;font-weight:700;color:#0a0a0a;line-height:1.1;margin-bottom:6px;}
+    .pdf-report-title em{font-style:italic;color:#b8924a;}
+    .pdf-report-sub{font-size:14px;color:#666;margin-bottom:0;}
+    .pdf-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+    .pdf-kpi{border:1px solid #e8e0d0;border-radius:8px;padding:14px 16px;position:relative;overflow:hidden;}
+    .pdf-kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#b8924a,#f0cc80);}
+    .pdf-kpi-lbl{font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-bottom:6px;}
+    .pdf-kpi-val{font-size:20px;font-weight:700;color:#0a0a0a;}
+    .pdf-kpi-sub{font-family:Arial,sans-serif;font-size:9px;color:#aaa;margin-top:3px;}
+    .pdf-section-title{font-size:18px;font-weight:700;color:#b8924a;margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid #e8e0d0;}
+    .pdf-chart-area{border:1px solid #e8e0d0;border-radius:8px;overflow:hidden;margin-bottom:20px;}
+    .pdf-chart-label{font-family:Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#888;padding:12px 16px 8px;}
+    .pdf-params{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px;}
+    .pdf-param{background:#f8f5f0;border-radius:6px;padding:10px 14px;}
+    .pdf-param-lbl{font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#888;margin-bottom:3px;}
+    .pdf-param-val{font-size:14px;font-weight:700;color:#0a0a0a;}
+    table.pdf-table{width:100%;border-collapse:collapse;font-size:11px;font-family:Arial,sans-serif;}
+    table.pdf-table th{background:#f8f5f0;color:#666;font-weight:700;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:8px 10px;text-align:right;border-bottom:1px solid #e8e0d0;}
+    table.pdf-table th:first-child{text-align:left;}
+    table.pdf-table td{padding:7px 10px;text-align:right;color:#444;border-bottom:1px solid #f0ece4;}
+    table.pdf-table td:first-child{text-align:left;font-weight:700;color:#0a0a0a;}
+    .pdf-green{color:#16a34a!important;font-weight:700;}
+    .pdf-footer{position:absolute;bottom:32px;left:52px;right:52px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e8e0d0;padding-top:14px;}
+    .pdf-footer p{font-family:Arial,sans-serif;font-size:8px;color:#aaa;}
+    /* PDF SECOND PAGE */
+    .pdf-page-2{padding:48px 52px;position:relative;}
+    /* BTN */
+    .btn-pdf{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050608;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:14px 28px;border-radius:8px;border:none;cursor:pointer;transition:filter .2s,box-shadow .2s;box-shadow:0 0 24px rgba(184,146,74,0.25);width:100%;justify-content:center;margin-top:4px;}
+    .btn-pdf:hover{filter:brightness(1.1);box-shadow:0 0 40px rgba(184,146,74,0.4);}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    @media print{body{background:#fff;}#bg-canvas,nav,main .panel,.hero,footer{display:none;}.pdf-preview{box-shadow:none;}}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Export PDF</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">Rapport Premium · Kapitalize</div>
+    <h1>Votre rapport<br><em>patrimonial signé</em></h1>
+    <p>Générez un document PDF de qualité professionnelle avec votre simulation complète, prêt à partager avec votre conseiller financier.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="main-grid">
+      <!-- LEFT: PARAMS -->
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel-title">Paramètres de simulation</div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Capital initial</span><span class="field-value" id="vp-p">10 000 €</span></div>
+            <input type="range" id="rp-p" min="0" max="500000" step="500" value="10000"/>
+            <div class="input-wrap"><input type="number" class="field-num" id="np-p" value="10000"/><span class="input-unit">€</span></div>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Versement mensuel</span><span class="field-value" id="vp-m">300 €</span></div>
+            <input type="range" id="rp-m" min="0" max="5000" step="50" value="300"/>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Taux annuel</span><span class="field-value" id="vp-r">7,0 %</span></div>
+            <input type="range" id="rp-r" min="0" max="20" step="0.1" value="7"/>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Durée</span><span class="field-value" id="vp-y">25 ans</span></div>
+            <input type="range" id="rp-y" min="1" max="60" step="1" value="25"/>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel-title">Personnalisation du rapport</div>
+          <div class="field">
+            <div class="field-label" style="margin-bottom:7px;">Votre nom / Raison sociale</div>
+            <input type="text" class="text-input" id="pdf-name" placeholder="Jean Dupont" value=""/>
+          </div>
+          <div class="field">
+            <div class="field-label" style="margin-bottom:7px;">Notes / Commentaires</div>
+            <input type="text" class="text-input" id="pdf-notes" placeholder="Simulation pour portefeuille PEA — Horizon retraite"/>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Actions</div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Le rapport s'ouvre dans un nouvel onglet. Utilisez <strong style="color:var(--text);">Ctrl+P / Cmd+P → Enregistrer en PDF</strong> pour télécharger.</p>
+          <button class="btn-pdf" onclick="exportPDF()">⬇ Générer le rapport PDF</button>
+          <div style="margin-top:10px;text-align:center;font-size:10px;color:var(--muted2);">Format A4 · Portrait · 2 pages</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div>
+        <div class="preview-panel">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border2);">
+            <div style="font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);">Aperçu du rapport</div>
+          </div>
+          <div id="preview-content" style="padding:20px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Rapport à titre pédagogique uniquement. Pas un conseil financier.</p>
+</footer>
+
+<script>
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,particles=[],time=0;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}resize();for(let i=0;i<100;i++)particles.push(mkP());window.addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);time+=.004;[{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(62,207,122,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+
+let simData={};
+
+function buildSim(){
+  const P=+document.getElementById('np-p').value||0,m=+document.getElementById('rp-m').value||0,r=+document.getElementById('rp-r').value/100||0,t=+document.getElementById('rp-y').value||1;
+  let cap=P,totalDep=P,bestYr=0;
+  const N=12,rows=[],labels=['An 0'],totals=[P],deps=[P];
+  for(let y=1;y<=t;y++){
+    const st=cap,stDep=totalDep;
+    for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}
+    totalDep+=m*12;
+    const yInt=cap-st-(totalDep-stDep);
+    if(yInt>bestYr)bestYr=yInt;
+    rows.push({y,st,yDep:m*12,yInt,tot:cap,gr:st>0?(cap-st)/st*100:0});
+    labels.push('An '+y);totals.push(cap);deps.push(totalDep);
+  }
+  const fv=cap,dep=totalDep,mult=P>0?(fv/P).toFixed(2):'—',cagr=(Math.pow(fv/Math.max(P,1),1/t)-1)*100;
+  return{P,m,r:r*100,t,fv,dep,mult,cagr,bestYr,rows:rows.slice(0,Math.min(rows.length,25)),labels,totals,deps};
+}
+
+function buildPreviewHTML(d){
+  const today=new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'});
+  const pdfName=document.getElementById('pdf-name').value.trim();
+  const notes=document.getElementById('pdf-notes').value.trim();
+  return `<div class="pdf-preview">
+<div class="pdf-page">
+<div class="pdf-header">
+  <div class="pdf-brand">
+    <div class="pdf-logo">K</div>
+    <div><div class="pdf-brand-name">KAPITALIZE</div><div class="pdf-brand-tag">Rapport Patrimonial Premium</div></div>
+  </div>
+  <div class="pdf-meta"><div>Généré le ${today}</div>${pdfName?`<div style="margin-top:4px;font-weight:700;color:#0a0a0a;">${pdfName}</div>`:''} ${notes?`<div style="margin-top:2px;font-style:italic;">${notes}</div>`:''}</div>
+</div>
+<div class="pdf-title-section">
+  <div class="pdf-report-tag">Simulation · Intérêts composés</div>
+  <div class="pdf-report-title">La <em>huitième merveille</em> du monde</div>
+  <div class="pdf-report-sub">Projection patrimoniale sur ${d.t} ans — Méthodologie capitalisation mensuelle</div>
+</div>
+<div class="pdf-kpi-row">
+  <div class="pdf-kpi"><div class="pdf-kpi-lbl">Capital final</div><div class="pdf-kpi-val">${fmtK(d.fv)}</div><div class="pdf-kpi-sub">projection brute</div></div>
+  <div class="pdf-kpi"><div class="pdf-kpi-lbl">Total investi</div><div class="pdf-kpi-val">${fmtK(d.dep)}</div><div class="pdf-kpi-sub">apports cumulés</div></div>
+  <div class="pdf-kpi"><div class="pdf-kpi-lbl">Intérêts gagnés</div><div class="pdf-kpi-val">${fmtK(d.fv-d.dep)}</div><div class="pdf-kpi-sub">gains composés</div></div>
+  <div class="pdf-kpi"><div class="pdf-kpi-lbl">CAGR</div><div class="pdf-kpi-val">${d.cagr.toFixed(2)}%</div><div class="pdf-kpi-sub">taux annualisé</div></div>
+</div>
+<div class="pdf-section-title">Paramètres de simulation</div>
+<div class="pdf-params">
+  <div class="pdf-param"><div class="pdf-param-lbl">Capital initial</div><div class="pdf-param-val">${fmtK(d.P)}</div></div>
+  <div class="pdf-param"><div class="pdf-param-lbl">Versement mensuel</div><div class="pdf-param-val">${fmtK(d.m)}/mois</div></div>
+  <div class="pdf-param"><div class="pdf-param-lbl">Taux annuel</div><div class="pdf-param-val">${d.r.toFixed(1)} %</div></div>
+  <div class="pdf-param"><div class="pdf-param-lbl">Horizon</div><div class="pdf-param-val">${d.t} ans · Capitalisation mensuelle</div></div>
+  <div class="pdf-param"><div class="pdf-param-lbl">Multiplicateur</div><div class="pdf-param-val">×${d.mult}</div></div>
+  <div class="pdf-param"><div class="pdf-param-lbl">Meilleure année</div><div class="pdf-param-val">+${fmtK(d.bestYr)}</div></div>
+</div>
+<div class="pdf-section-title">Évolution annuelle du patrimoine</div>
+<table class="pdf-table">
+<thead><tr><th>Année</th><th>Capital début</th><th>Apports</th><th>Intérêts</th><th>Capital fin</th><th>Croissance</th></tr></thead>
+<tbody>${d.rows.map(row=>`<tr><td>An ${row.y}</td><td>${fmtK(row.st)}</td><td>${fmtK(row.yDep)}</td><td class="pdf-green">+${fmtK(row.yInt)}</td><td style="font-weight:700">${fmtK(row.tot)}</td><td class="pdf-green">+${row.gr.toFixed(1)}%</td></tr>`).join('')}</tbody>
+</table>
+<div class="pdf-footer">
+  <p>© ${new Date().getFullYear()} Kapitalize — kapitalize.fr · Outil pédagogique uniquement, pas un conseil financier</p>
+  <p>Page 1 / 1</p>
+</div>
+</div>
+</div>`;
+}
+
+function renderPreview(){
+  const d=buildSim();simData=d;
+  document.getElementById('preview-content').innerHTML=buildPreviewHTML(d);
+}
+
+['rp-p','rp-m','rp-r','rp-y'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    updateGrad(el);
+    const v=+el.value;
+    if(id==='rp-p'){document.getElementById('vp-p').textContent=v.toLocaleString('fr-FR')+' €';document.getElementById('np-p').value=v;}
+    if(id==='rp-m')document.getElementById('vp-m').textContent=v.toLocaleString('fr-FR')+' €';
+    if(id==='rp-r')document.getElementById('vp-r').textContent=v.toFixed(1)+' %';
+    if(id==='rp-y')document.getElementById('vp-y').textContent=v+' ans';
+    renderPreview();
+  });
+  updateGrad(el);
+});
+document.getElementById('np-p').addEventListener('input',e=>{document.getElementById('rp-p').value=e.target.value;updateGrad(document.getElementById('rp-p'));renderPreview();});
+['pdf-name','pdf-notes'].forEach(id=>document.getElementById(id).addEventListener('input',renderPreview));
+
+function exportPDF(){
+  const d=buildSim();
+  const html=`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"/><title>Rapport Patrimonial — Kapitalize</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Cormorant Garamond',Georgia,serif;background:#fff;color:#0a0a0a;}.pdf-page{padding:48px 52px;min-height:297mm;position:relative;page-break-after:always;}.pdf-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:20px;border-bottom:2px solid #b8924a;}.pdf-logo{width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,#b8924a,#f0cc80);display:inline-flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;margin-right:12px;}.pdf-brand-name{font-size:24px;font-weight:700;letter-spacing:.05em;}.pdf-brand-tag{font-family:Arial,sans-serif;font-size:10px;color:#888;letter-spacing:.1em;text-transform:uppercase;}.pdf-meta{text-align:right;font-family:Arial,sans-serif;font-size:10px;color:#888;}.pdf-report-tag{font-family:Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#b8924a;margin-bottom:8px;}.pdf-report-title{font-size:32px;font-weight:700;line-height:1.1;margin-bottom:6px;}.pdf-report-title em{font-style:italic;color:#b8924a;}.pdf-report-sub{font-size:13px;color:#666;margin-bottom:28px;}.pdf-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}.pdf-kpi{border:1px solid #e8e0d0;border-radius:8px;padding:14px;}.pdf-kpi::before{content:'';display:block;height:2px;background:linear-gradient(90deg,#b8924a,#f0cc80);margin-bottom:10px;border-radius:2px;}.pdf-kpi-lbl{font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-bottom:5px;}.pdf-kpi-val{font-size:20px;font-weight:700;}.pdf-kpi-sub{font-family:Arial,sans-serif;font-size:9px;color:#aaa;margin-top:3px;}.pdf-section-title{font-size:18px;font-weight:700;color:#b8924a;margin:24px 0 12px;padding-bottom:7px;border-bottom:1px solid #e8e0d0;}.pdf-params{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}.pdf-param{background:#f8f5f0;border-radius:6px;padding:10px 12px;}.pdf-param-lbl{font-family:Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#888;margin-bottom:3px;}.pdf-param-val{font-size:14px;font-weight:700;}.pdf-table{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:10px;}.pdf-table th{background:#f8f5f0;color:#666;font-weight:700;font-size:8px;letter-spacing:.1em;text-transform:uppercase;padding:8px 9px;text-align:right;border-bottom:1px solid #e8e0d0;}.pdf-table th:first-child{text-align:left;}.pdf-table td{padding:6px 9px;text-align:right;color:#444;border-bottom:1px solid #f0ece4;}.pdf-table td:first-child{text-align:left;font-weight:700;color:#0a0a0a;}.tg{color:#16a34a;font-weight:700;}.pdf-footer{position:fixed;bottom:28px;left:52px;right:52px;display:flex;justify-content:space-between;border-top:1px solid #e8e0d0;padding-top:10px;font-family:Arial,sans-serif;font-size:8px;color:#aaa;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style></head><body>${buildPreviewHTML(d)}<script>window.onload=function(){window.print();}<\/script></body></html>`;
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+}
+
+renderPreview();
+</script>
+</body>
+</html>

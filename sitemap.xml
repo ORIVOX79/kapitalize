@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://kapitalize.fr/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://kapitalize.fr/outils/</loc><priority>0.9</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://kapitalize.fr/wealth-timeline/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/alter-ego-simulator/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/cout-de-linaction/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/scenarios-historiques/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/liberte-financiere/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/dca-irregulier/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/export-pdf/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/milestones/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/patrimoine-mondial/</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://kapitalize.fr/objets-concrets/</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+</urlset>

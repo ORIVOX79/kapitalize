@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Milestones Premium — Célébrez chaque palier patrimonial | Kapitalize</title>
+  <meta name="description" content="Découvrez quand vous franchirez 100 000 €, 500 000 € et 1 million d'euros. Visualisation animée de vos paliers patrimoniaux avec effets premium."/>
+  <meta name="keywords" content="palier patrimoine, 100000 euros investissement, 1 million euros épargne, palier millionnaire, intérêts composés milestones, cap 1 million"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/milestones/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    #confetti-canvas{position:fixed;inset:0;z-index:200;pointer-events:none;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.12) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:18px;border:1px solid rgba(184,146,74,0.2);padding:6px 16px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:500px;margin:0 auto;}
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    .main-grid{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start;}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+    .panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;}
+    .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .panel-title{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .panel-title::before{content:'';width:14px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+    .field{margin-bottom:14px;}
+    .field-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .field-label{font-size:11px;color:var(--muted);font-weight:600;}
+    .field-value{font-size:13px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    .field-num{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:8px 36px 8px 12px;width:100%;outline:none;margin-top:7px;-moz-appearance:textfield;}
+    .field-num::-webkit-inner-spin-button{display:none;}
+    .field-num:focus{border-color:rgba(184,146,74,0.4);background:rgba(184,146,74,0.03);}
+    .input-wrap{position:relative;}
+    .input-unit{position:absolute;right:11px;top:50%;transform:translateY(-65%);color:var(--muted2);font-size:11px;pointer-events:none;font-weight:600;}
+    /* MILESTONE CARDS */
+    .milestones-display{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+    .ms-card{border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .3s;cursor:pointer;}
+    .ms-card:hover{transform:translateY(-2px);}
+    .ms-card.locked{background:linear-gradient(145deg,rgba(13,16,24,0.9),rgba(8,10,14,0.95));border:1px solid var(--border2);}
+    .ms-card.unlocked{border:1px solid;}
+    .ms-card.unlocked::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,0.04) 0%,transparent 60%);}
+    .ms-card-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s;}
+    .ms-card.unlocked .ms-card-glow{opacity:1;}
+    .ms-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+    .ms-icon{font-size:28px;flex-shrink:0;}
+    .ms-info{flex:1;}
+    .ms-amount{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;line-height:1;}
+    .ms-name{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:2px;}
+    .ms-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 12px;border-radius:100px;}
+    .ms-progress-wrap{margin-top:12px;}
+    .ms-progress-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+    .ms-progress-fill{height:100%;border-radius:3px;transition:width .6s ease;}
+    .ms-progress-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted2);margin-top:4px;}
+    .ms-eta{font-size:10px;color:var(--muted);margin-top:8px;}
+    .ms-eta strong{color:var(--text);}
+    /* CHART */
+    .chart-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;margin-bottom:12px;position:relative;overflow:hidden;}
+    .chart-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .chart-wrap{position:relative;height:320px;}
+    /* TOAST */
+    .toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050608;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:14px 28px;border-radius:100px;box-shadow:0 8px 40px rgba(184,146,74,0.5);z-index:300;opacity:0;transition:opacity .4s,transform .4s;pointer-events:none;letter-spacing:.05em;}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Milestones</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">🏆 Paliers & Célébrations · Kapitalize</div>
+    <h1>Vos <em>grands paliers</em><br>patrimoniaux</h1>
+    <p>Visualisez quand vous franchirez les caps symboliques qui changent une vie : 100 k€, 500 k€, le million d'euros.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="main-grid">
+      <!-- LEFT -->
+      <div class="panel">
+        <div class="panel-title">Votre simulation</div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Capital initial</span><span class="field-value" id="vm-p">10 000 €</span></div>
+          <input type="range" id="rm-p" min="0" max="500000" step="500" value="10000"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nm-p" value="10000"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Versement mensuel</span><span class="field-value" id="vm-m">300 €</span></div>
+          <input type="range" id="rm-m" min="0" max="5000" step="50" value="300"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nm-m" value="300"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Taux annuel</span><span class="field-value" id="vm-r">7,0 %</span></div>
+          <input type="range" id="rm-r" min="0" max="20" step="0.1" value="7"/>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Horizon max</span><span class="field-value" id="vm-y">40 ans</span></div>
+          <input type="range" id="rm-y" min="5" max="60" step="1" value="40"/>
+        </div>
+
+        <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,0.04);padding-top:18px;">
+          <div class="panel-title">Paliers personnalisés</div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:12px;">Cliquez sur un palier débloqué pour déclencher la célébration 🎊</p>
+          <div class="milestones-display" id="milestones-display"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <div class="chart-panel" style="margin-bottom:12px;">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:14px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);display:inline-block;"></span>Courbe patrimoniale & paliers</div>
+          <div class="chart-wrap"><canvas id="chart"></canvas></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Récapitulatif des paliers</div>
+          <div id="ms-summary" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Projections mathématiques, pas des garanties de rendement.</p>
+</footer>
+
+<script>
+/* BG */
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,particles=[],time=0;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}resize();for(let i=0;i<100;i++)particles.push(mkP());window.addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);time+=.004;[{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(62,207,122,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+
+/* CONFETTI */
+let confettiPieces=[];
+const confettiCanvas=document.getElementById('confetti-canvas');
+const confettiCtx=confettiCanvas.getContext('2d');
+confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight;
+window.addEventListener('resize',()=>{confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight;});
+
+const CONFETTI_COLORS=['#b8924a','#d4a855','#f0cc80','#3ecf7a','#60a5fa','#fff0c0','#ffffff'];
+function launchConfetti(color){
+  const n=120;
+  for(let i=0;i<n;i++){
+    confettiPieces.push({x:Math.random()*window.innerWidth,y:-20,vx:(Math.random()-0.5)*8,vy:Math.random()*8+3,rot:Math.random()*360,rotV:(Math.random()-0.5)*10,size:Math.random()*8+4,opacity:1,color:color||CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],type:Math.random()>0.5?'rect':'circle'});
+  }
+  requestAnimationFrame(animateConfetti);
+}
+function animateConfetti(){
+  confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  confettiPieces=confettiPieces.filter(p=>p.opacity>0.02);
+  confettiPieces.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.rot+=p.rotV;p.opacity-=0.008;
+    confettiCtx.save();confettiCtx.globalAlpha=p.opacity;confettiCtx.translate(p.x,p.y);confettiCtx.rotate(p.rot*Math.PI/180);confettiCtx.fillStyle=p.color;
+    if(p.type==='rect'){confettiCtx.fillRect(-p.size/2,-p.size/4,p.size,p.size/2);}else{confettiCtx.beginPath();confettiCtx.arc(0,0,p.size/2,0,Math.PI*2);confettiCtx.fill();}
+    confettiCtx.restore();
+  });
+  if(confettiPieces.length>0)requestAnimationFrame(animateConfetti);
+  else confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+}
+
+/* TOAST */
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+/* APP */
+const MILESTONES=[
+  {amount:10000,icon:'🌱',name:'Décollage',color:'#60a5fa',glow:'rgba(96,165,250,0.12)',confetti:'#60a5fa',toast:'🌱 10 000 € — La première brique du patrimoine !'},
+  {amount:50000,icon:'💎',name:'Cap des 50k',color:'#a78bfa',glow:'rgba(167,139,250,0.12)',confetti:'#a78bfa',toast:'💎 50 000 € — Une étape majeure !'},
+  {amount:100000,icon:'🎯',name:'Premier 100k',color:'#d4a855',glow:'rgba(212,168,85,0.15)',confetti:'#d4a855',toast:'🎯 100 000 € — Le premier capital sérieux !'},
+  {amount:250000,icon:'🚀',name:'Quart de million',color:'#3ecf7a',glow:'rgba(62,207,122,0.12)',confetti:'#3ecf7a',toast:'🚀 250 000 € — Vous êtes dans la cour des grands !'},
+  {amount:500000,icon:'🏛️',name:'Demi-million',color:'#f0cc80',glow:'rgba(240,204,128,0.15)',confetti:'#f0cc80',toast:'🏛️ 500 000 € — La liberté financière est proche !'},
+  {amount:1000000,icon:'👑',name:'Millionnaire',color:'#b8924a',glow:'rgba(184,146,74,0.25)',confetti:'#b8924a',toast:'👑 1 000 000 € — BIENVENUE DANS LE CLUB DES MILLIONNAIRES !'},
+  {amount:5000000,icon:'⚡',name:'5 Millions',color:'#f87171',glow:'rgba(248,113,113,0.12)',confetti:'#f87171',toast:'⚡ 5 000 000 € — Ultra High Net Worth !'},
+];
+
+let chartInst=null;
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+['rm-p','rm-m','rm-r','rm-y'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    updateGrad(el);const v=+el.value;
+    if(id==='rm-p'){document.getElementById('vm-p').textContent=v.toLocaleString('fr-FR')+' €';document.getElementById('nm-p').value=v;}
+    if(id==='rm-m'){document.getElementById('vm-m').textContent=v.toLocaleString('fr-FR')+' €';document.getElementById('nm-m').value=v;}
+    if(id==='rm-r')document.getElementById('vm-r').textContent=v.toFixed(1)+' %';
+    if(id==='rm-y')document.getElementById('vm-y').textContent=v+' ans';
+    render();
+  });updateGrad(el);
+});
+['nm-p','nm-m'].forEach(id=>{document.getElementById(id).addEventListener('input',()=>{const rid=id.replace('nm-','rm-');document.getElementById(rid).value=document.getElementById(id).value;updateGrad(document.getElementById(rid));render();});});
+
+function celebrate(ms){launchConfetti(ms.confetti);showToast(ms.toast);}
+
+function render(){
+  const P=+document.getElementById('nm-p').value||0,m=+document.getElementById('nm-m').value||0,r=+document.getElementById('rm-r').value/100||0,t=+document.getElementById('rm-y').value||40;
+  const N=12;
+  const labels=['An 0'],vals=[P];
+  let cap=P;
+  const msReach={};
+  MILESTONES.forEach(ms=>{if(P>=ms.amount&&!msReach[ms.amount])msReach[ms.amount]=0;});
+  for(let y=1;y<=t;y++){
+    for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}
+    labels.push('An '+y);vals.push(cap);
+    MILESTONES.forEach(ms=>{if(!msReach.hasOwnProperty(ms.amount)&&cap>=ms.amount)msReach[ms.amount]=y;});
+  }
+
+  // Milestone cards
+  const displayEl=document.getElementById('milestones-display');
+  displayEl.innerHTML='';
+  const summaryEl=document.getElementById('ms-summary');
+  summaryEl.innerHTML='';
+
+  MILESTONES.forEach(ms=>{
+    const reachYear=msReach.hasOwnProperty(ms.amount)?msReach[ms.amount]:null;
+    const unlocked=reachYear!==null;
+    const progress=unlocked?100:Math.min(100,cap/ms.amount*100);
+    const card=document.createElement('div');
+    card.className='ms-card '+(unlocked?'unlocked':'locked');
+    if(unlocked){
+      card.style.border=`1px solid ${ms.color}44`;
+      card.style.background=`linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98))`;
+      card.innerHTML=`<div class="ms-card-glow" style="background:radial-gradient(ellipse at 50% 0%,${ms.glow} 0%,transparent 60%);"></div>`;
+      card.addEventListener('click',()=>celebrate(ms));
+    }
+    card.innerHTML+= `<div class="ms-top"><div class="ms-icon">${ms.icon}</div><div class="ms-info"><div class="ms-amount" style="color:${unlocked?ms.color:'var(--muted)'}">${fmtK(ms.amount)}</div><div class="ms-name" style="color:${unlocked?ms.color:'var(--muted2)'}">${ms.name}</div></div><div class="ms-badge" style="background:${unlocked?ms.color+'22':'rgba(255,255,255,0.04)'};color:${unlocked?ms.color:'var(--muted2)'};border:1px solid ${unlocked?ms.color+'44':'var(--border2)'};">${unlocked?(reachYear===0?'Déjà atteint':'An '+reachYear):'Hors horizon'}</div></div><div class="ms-progress-wrap"><div class="ms-progress-bar"><div class="ms-progress-fill" style="width:${progress.toFixed(1)}%;background:${ms.color};"></div></div><div class="ms-progress-labels"><span>${fmtK(Math.min(cap,ms.amount))}</span><span>${fmtK(ms.amount)}</span></div></div>${unlocked&&reachYear>0?`<div class="ms-eta">Atteint dans <strong>${reachYear} an${reachYear>1?'s':''}</strong> — soit en <strong>${new Date().getFullYear()+reachYear}</strong></div>`:unlocked&&reachYear===0?`<div class="ms-eta" style="color:var(--green)">✓ Déjà atteint !</div>`:`<div class="ms-eta">Hors horizon — augmentez vos versements</div>`}`;
+    displayEl.appendChild(card);
+
+    // Summary card
+    const sc=document.createElement('div');
+    sc.style.cssText=`background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid ${unlocked?ms.color+'33':'var(--border2)'};border-radius:10px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;`;
+    sc.innerHTML=`<div style="font-size:18px;margin-bottom:6px;">${ms.icon}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:${unlocked?ms.color:'var(--muted)'};">${fmtK(ms.amount)}</div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:${unlocked?ms.color:'var(--muted2)'};margin-top:3px;font-weight:700;">${unlocked?(reachYear===0?'Déjà atteint ✓':'An '+reachYear+' · '+(new Date().getFullYear()+reachYear)):'Hors horizon'}</div>`;
+    summaryEl.appendChild(sc);
+  });
+
+  // Chart
+  const reachLines=MILESTONES.filter(ms=>msReach.hasOwnProperty(ms.amount)&&msReach[ms.amount]>0).map(ms=>({amount:ms.amount,color:ms.color,year:msReach[ms.amount]}));
+  const refDatasets=reachLines.map(rl=>({label:fmtK(rl.amount),data:Array(t+1).fill(rl.amount),borderColor:rl.color+'88',backgroundColor:'transparent',borderWidth:1,borderDash:[3,4],pointRadius:0,tension:0}));
+
+  if(chartInst)chartInst.destroy();
+  const ctx2=document.getElementById('chart').getContext('2d');
+  const grad=ctx2.createLinearGradient(0,0,0,320);
+  grad.addColorStop(0,'rgba(184,146,74,0.2)');grad.addColorStop(1,'rgba(184,146,74,0)');
+  chartInst=new Chart(ctx2,{type:'line',data:{labels,datasets:[
+    {label:'Capital projeté',data:vals,borderColor:'#b8924a',backgroundColor:grad,fill:true,tension:.45,pointRadius:0,borderWidth:2,order:0},
+    ...refDatasets
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a8090',font:{family:'Syne',size:10},boxWidth:10,padding:10,filter:item=>item.datasetIndex===0}},tooltip:{backgroundColor:'rgba(8,10,14,0.95)',borderColor:'rgba(184,146,74,0.2)',borderWidth:1,titleColor:'#e8e4dc',bodyColor:'#7a8090',titleFont:{family:'Syne',size:11,weight:'700'},bodyFont:{family:'Syne',size:11},padding:12,callbacks:{label:c=>c.datasetIndex===0?' Capital: '+fmtK(c.parsed.y):null}}},scales:{x:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},maxTicksLimit:10},grid:{color:'rgba(255,255,255,0.025)'}},y:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M€':v>=1e3?(v/1e3).toFixed(0)+'k€':v+'€'},grid:{color:'rgba(255,255,255,0.025)'}}}}});
+}
+render();
+</script>
+</body>
+</html>

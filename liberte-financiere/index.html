@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Liberté Financière — Calculez votre point d'indépendance | Kapitalize</title>
+  <meta name="description" content="Calculez le capital exact pour atteindre la liberté financière avec la règle des 4%. Visualisez quand votre patrimoine vivra à votre place. Simulateur FIRE premium."/>
+  <meta name="keywords" content="liberté financière, FIRE, règle des 4%, indépendance financière, retraite anticipée, capital vie des intérêts, simulateur FIRE France"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/liberte-financiere/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(62,207,122,0.1) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:18px;border:1px solid rgba(62,207,122,0.2);padding:6px 16px;border-radius:100px;background:rgba(62,207,122,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,58px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+    .hero h1 em{font-style:italic;color:var(--green);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:520px;margin:0 auto;}
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    .main-grid{display:grid;grid-template-columns:360px 1fr;gap:16px;align-items:start;}
+    @media(max-width:900px){.main-grid{grid-template-columns:1fr;}}
+    .panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;}
+    .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(62,207,122,0.3),transparent);}
+    .panel-title{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .panel-title::before{content:'';width:14px;height:1px;background:linear-gradient(90deg,var(--green),transparent);}
+    .field{margin-bottom:16px;}
+    .field-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .field-label{font-size:11px;color:var(--muted);font-weight:600;}
+    .field-value{font-size:13px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--green) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;background:radial-gradient(circle,#86efac 30%,var(--green) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(62,207,122,0.5);cursor:pointer;}
+    .field-num{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:9px 36px 9px 12px;width:100%;outline:none;margin-top:8px;-moz-appearance:textfield;}
+    .field-num::-webkit-inner-spin-button{display:none;}
+    .field-num:focus{border-color:rgba(62,207,122,0.4);background:rgba(62,207,122,0.03);}
+    .input-wrap{position:relative;}
+    .input-unit{position:absolute;right:11px;top:50%;transform:translateY(-65%);color:var(--muted2);font-size:11px;pointer-events:none;font-weight:600;}
+    .sep{border:none;border-top:1px solid rgba(255,255,255,0.04);margin:16px 0;}
+    /* FIRE NUMBER */
+    .fire-panel{background:linear-gradient(145deg,rgba(13,16,24,0.98),rgba(8,10,14,0.99));border:1px solid rgba(62,207,122,0.2);border-radius:var(--r);padding:28px;margin-bottom:12px;text-align:center;position:relative;overflow:hidden;}
+    .fire-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);}
+    .fire-panel::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(62,207,122,0.05) 0%,transparent 60%);pointer-events:none;}
+    .fire-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--green);font-weight:700;margin-bottom:10px;}
+    .fire-number{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,52px);font-weight:700;color:var(--green);line-height:1;margin-bottom:6px;text-shadow:0 0 40px rgba(62,207,122,0.3);}
+    .fire-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+    .fire-progress-wrap{margin:16px 0 8px;}
+    .fire-progress-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:6px;}
+    .fire-progress-bar{height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;}
+    .fire-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#86efac);border-radius:4px;transition:width .5s ease;}
+    .fire-status{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 16px;border-radius:100px;display:inline-block;margin-top:8px;}
+    .fire-status.reached{background:rgba(62,207,122,0.1);color:var(--green);border:1px solid rgba(62,207,122,0.3);}
+    .fire-status.progress{background:rgba(212,168,85,0.1);color:var(--gold2);border:1px solid rgba(212,168,85,0.3);}
+    /* FIRE TYPES */
+    .fire-types{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+    .fire-type{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:10px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+    .fire-type.active,.fire-type:hover{border-color:rgba(62,207,122,0.25);background:rgba(62,207,122,0.03);}
+    .fire-type-name{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin-bottom:4px;}
+    .fire-type-rate{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--green);}
+    .fire-type-desc{font-size:9px;color:var(--muted);margin-top:4px;line-height:1.4;}
+    /* CHART */
+    .chart-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;margin-bottom:12px;position:relative;overflow:hidden;}
+    .chart-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(62,207,122,0.3),transparent);}
+    .chart-wrap{position:relative;height:300px;}
+    /* MONTHLY INCOME */
+    .income-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
+    .income-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:18px;text-align:center;position:relative;overflow:hidden;}
+    .income-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.07),transparent);}
+    .income-rate{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;font-weight:700;}
+    .income-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--green);}
+    .income-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--green);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Liberté Financière</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">🌴 Indépendance financière · FIRE</div>
+    <h1>Votre point de<br><em>liberté financière</em></h1>
+    <p>Quel capital vous permettrait de vivre de vos seuls intérêts ? Calculez votre chiffre magique et visualisez le chemin pour l'atteindre.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="main-grid">
+      <!-- LEFT -->
+      <div>
+        <div class="panel" style="margin-bottom:12px;">
+          <div class="panel-title">Vos dépenses annuelles</div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Dépenses mensuelles cibles</span><span class="field-value" id="vf-dep">3 000 €/mois</span></div>
+            <input type="range" id="rf-dep" min="500" max="20000" step="100" value="3000"/>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Taux de retrait annuel</span><span class="field-value" id="vf-wr">4,0 %</span></div>
+            <input type="range" id="rf-wr" min="2" max="8" step="0.1" value="4"/>
+            <div style="font-size:10px;color:var(--muted2);margin-top:4px;">Règle des 4% = retraite sûre sur 30+ ans</div>
+          </div>
+          <hr class="sep"/>
+          <div class="panel-title">Votre situation actuelle</div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Capital actuel</span><span class="field-value" id="vf-p">15 000 €</span></div>
+            <input type="range" id="rf-p" min="0" max="500000" step="1000" value="15000"/>
+            <div class="input-wrap"><input type="number" class="field-num" id="nf-p" value="15000"/><span class="input-unit">€</span></div>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Épargne mensuelle</span><span class="field-value" id="vf-m">500 €</span></div>
+            <input type="range" id="rf-m" min="0" max="5000" step="50" value="500"/>
+            <div class="input-wrap"><input type="number" class="field-num" id="nf-m" value="500"/><span class="input-unit">€</span></div>
+          </div>
+          <div class="field">
+            <div class="field-row"><span class="field-label">Rendement annuel</span><span class="field-value" id="vf-r">7,0 %</span></div>
+            <input type="range" id="rf-r" min="1" max="15" step="0.1" value="7"/>
+          </div>
+        </div>
+        <!-- FIRE TYPES -->
+        <div class="panel">
+          <div class="panel-title">Type de FIRE</div>
+          <div class="fire-types">
+            <div class="fire-type active" onclick="setFireType(this,4)">
+              <div class="fire-type-name">Classic FIRE</div>
+              <div class="fire-type-rate">4%</div>
+              <div class="fire-type-desc">Retraite durable 30+ ans</div>
+            </div>
+            <div class="fire-type" onclick="setFireType(this,3)">
+              <div class="fire-type-name">Fat FIRE</div>
+              <div class="fire-type-rate">3%</div>
+              <div class="fire-type-desc">Confort premium, sécurité max</div>
+            </div>
+            <div class="fire-type" onclick="setFireType(this,5)">
+              <div class="fire-type-name">Lean FIRE</div>
+              <div class="fire-type-rate">5%</div>
+              <div class="fire-type-desc">Minimaliste, atteinte rapide</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <!-- FIRE NUMBER -->
+        <div class="fire-panel">
+          <div class="fire-eyebrow">🎯 Votre numéro FIRE</div>
+          <div class="fire-number" id="fire-number">—</div>
+          <div class="fire-sub" id="fire-sub">—</div>
+          <div class="fire-progress-wrap">
+            <div class="fire-progress-label">
+              <span id="fp-label-left">Capital actuel</span>
+              <span id="fp-label-right">—</span>
+            </div>
+            <div class="fire-progress-bar"><div class="fire-progress-fill" id="fire-fill" style="width:0%"></div></div>
+          </div>
+          <div class="fire-status progress" id="fire-status">—</div>
+        </div>
+
+        <!-- INCOME GRID -->
+        <div class="income-grid" id="income-grid">
+          <div class="income-card"><div class="income-rate">Revenu mensuel</div><div class="income-val" id="inc-m">—</div><div class="income-sub">passif / mois</div></div>
+          <div class="income-card"><div class="income-rate">Par jour</div><div class="income-val" id="inc-d">—</div><div class="income-sub">en intérêts</div></div>
+          <div class="income-card"><div class="income-rate">Années pour atteindre</div><div class="income-val" id="inc-y">—</div><div class="income-sub">à votre rythme actuel</div></div>
+          <div class="income-card"><div class="income-rate">Taux d'épargne</div><div class="income-val" id="inc-sr">—</div><div class="income-sub">de vos revenus investis</div></div>
+        </div>
+
+        <!-- CHART -->
+        <div class="chart-panel">
+          <div style="font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:14px;height:1px;background:linear-gradient(90deg,var(--green),transparent);display:inline-block;"></span>Progression vers la liberté financière</div>
+          <div class="chart-wrap"><canvas id="chart"></canvas></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — La règle des 4% est une approximation basée sur l'étude Trinity (1998). Outil pédagogique uniquement.</p>
+</footer>
+
+<script>
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,particles=[],time=0;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,green:Math.random()>.6};}resize();for(let i=0;i<100;i++)particles.push(mkP());window.addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);time+=.004;[{x:W*.2,y:H*.3,r:400,color:'rgba(62,207,122,0.025)'},{x:W*.8,y:H*.6,r:300,color:'rgba(62,207,122,0.015)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:450,color:'rgba(184,146,74,0.015)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});ctx.strokeStyle='rgba(62,207,122,0.012)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.green?`rgba(62,207,122,${p.opacity*.6})`:`rgba(184,146,74,${p.opacity*.4})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+
+let chartInst=null,fireWR=4;
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+
+function setFireType(el,rate){document.querySelectorAll('.fire-type').forEach(e=>e.classList.remove('active'));el.classList.add('active');fireWR=rate;document.getElementById('rf-wr').value=rate;document.getElementById('vf-wr').textContent=rate.toFixed(1)+' %';updateGrad(document.getElementById('rf-wr'));calc();}
+
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+
+['rf-dep','rf-wr','rf-p','rf-m','rf-r'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    updateGrad(el);
+    if(id==='rf-dep')document.getElementById('vf-dep').textContent=(+el.value).toLocaleString('fr-FR')+' €/mois';
+    if(id==='rf-wr'){document.getElementById('vf-wr').textContent=(+el.value).toFixed(1)+' %';fireWR=+el.value;}
+    if(id==='rf-p'){document.getElementById('vf-p').textContent=(+el.value).toLocaleString('fr-FR')+' €';document.getElementById('nf-p').value=el.value;}
+    if(id==='rf-m'){document.getElementById('vf-m').textContent=(+el.value).toLocaleString('fr-FR')+' €';document.getElementById('nf-m').value=el.value;}
+    if(id==='rf-r')document.getElementById('vf-r').textContent=(+el.value).toFixed(1)+' %';
+    calc();
+  });
+  updateGrad(el);
+});
+['nf-p','nf-m'].forEach(id=>{document.getElementById(id).addEventListener('input',()=>{const rid=id.replace('nf-','rf-');document.getElementById(rid).value=document.getElementById(id).value;updateGrad(document.getElementById(rid));calc();});});
+
+function calc(){
+  const dep=+document.getElementById('rf-dep').value||3000;
+  const wr=fireWR/100;
+  const P=+document.getElementById('nf-p').value||0;
+  const m=+document.getElementById('rf-m').value||0;
+  const r=+document.getElementById('rf-r').value/100||0.07;
+  const fireNumber=dep*12/wr;
+  const monthlyPassive=fireNumber*wr/12;
+  const dayPassive=fireNumber*wr/365;
+  const savingsRate=dep>0?(m/(dep+m)*100).toFixed(0):0;
+
+  document.getElementById('fire-number').textContent=fmtK(fireNumber);
+  document.getElementById('fire-sub').textContent='Pour générer '+fmtK(dep)+'/mois avec un retrait de '+fireWR+'%';
+  document.getElementById('inc-m').textContent=fmtK(monthlyPassive);
+  document.getElementById('inc-d').textContent=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(dayPassive);
+  document.getElementById('inc-sr').textContent=savingsRate+'%';
+
+  // Progress
+  const pct=Math.min(100,P/fireNumber*100);
+  document.getElementById('fire-fill').style.width=pct.toFixed(1)+'%';
+  document.getElementById('fp-label-right').textContent=fmtK(fireNumber)+' requis';
+
+  // Find years to FIRE
+  let cap=P,N=12,years=0;
+  const maxYears=60;
+  let fireReached=false;
+  const labels=['Auj.'],vals=[cap],fireVals=[fireNumber];
+  for(let y=1;y<=maxYears;y++){
+    for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}
+    labels.push('An '+y);vals.push(cap);fireVals.push(fireNumber);
+    if(!fireReached&&cap>=fireNumber){years=y;fireReached=true;}
+  }
+  if(fireReached){
+    document.getElementById('inc-y').textContent=years+' ans';
+    document.getElementById('fire-status').textContent='🎯 Liberté atteinte dans '+years+' ans';
+    document.getElementById('fire-status').className='fire-status reached';
+  } else {
+    document.getElementById('inc-y').textContent='60+ ans';
+    document.getElementById('fire-status').textContent='Augmentez votre épargne mensuelle';
+    document.getElementById('fire-status').className='fire-status progress';
+  }
+
+  if(pct>=100){document.getElementById('fire-status').textContent='🎉 Vous êtes déjà financièrement libre !';document.getElementById('fire-status').className='fire-status reached';}
+
+  if(chartInst)chartInst.destroy();
+  const ctx2=document.getElementById('chart').getContext('2d');
+  const grad=ctx2.createLinearGradient(0,0,0,300);
+  grad.addColorStop(0,'rgba(62,207,122,0.2)');grad.addColorStop(1,'rgba(62,207,122,0)');
+  chartInst=new Chart(ctx2,{type:'line',data:{labels,datasets:[
+    {label:'Capital projeté',data:vals,borderColor:'#3ecf7a',backgroundColor:grad,fill:true,tension:.45,pointRadius:0,borderWidth:2},
+    {label:'Objectif FIRE',data:fireVals,borderColor:'rgba(212,168,85,0.5)',backgroundColor:'transparent',tension:0,pointRadius:0,borderWidth:1.5,borderDash:[6,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a8090',font:{family:'Syne',size:10},boxWidth:10,padding:16}},tooltip:{backgroundColor:'rgba(8,10,14,0.95)',borderColor:'rgba(62,207,122,0.2)',borderWidth:1,titleColor:'#e8e4dc',bodyColor:'#7a8090',titleFont:{family:'Syne',size:11,weight:'700'},bodyFont:{family:'Syne',size:11},padding:12,callbacks:{label:c=>' '+c.dataset.label+': '+fmtK(c.parsed.y)}}},scales:{x:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},maxTicksLimit:12},grid:{color:'rgba(255,255,255,0.025)'}},y:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M€':v>=1e3?(v/1e3).toFixed(0)+'k€':v+'€'},grid:{color:'rgba(255,255,255,0.025)'}}}}});
+}
+calc();
+</script>
+</body>
+</html>

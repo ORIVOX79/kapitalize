@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kapitalize — Suite complète d'outils financiers premium</title>
+  <meta name="description" content="Découvrez la suite complète Kapitalize : 11 outils premium pour simuler, planifier et visualiser votre patrimoine. Intérêts composés, FIRE, DCA, jalons de vie, scénarios historiques et bien plus."/>
+  <meta name="keywords" content="kapitalize, outils financiers premium, simulateur intérêts composés, calculateur patrimoine, liberté financière, DCA, FIRE France"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/outils/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#050608;--bg2:#080a0e;--bg3:#0d1018;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--blue:#60a5fa;--purple:#a78bfa;--red:#ef4444;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,0.6);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;letter-spacing:.08em;color:var(--text);text-decoration:none;}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;box-shadow:0 0 20px rgba(184,146,74,0.4),inset 0 1px 0 rgba(255,255,255,0.3);position:relative;overflow:hidden;}
+    .logo-box::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.25) 50%,transparent 60%);animation:logoShine 4s ease-in-out infinite;}
+    @keyframes logoShine{0%,100%{transform:translateX(-100%) translateY(-100%) rotate(45deg);}50%{transform:translateX(100%) translateY(100%) rotate(45deg);}}
+    .nav-wordmark{display:flex;flex-direction:column;line-height:1;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;letter-spacing:.1em;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:textShimmer 4s linear infinite;}
+    @keyframes textShimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-tagline{font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;}
+    .nav-cta{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050608;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;border-radius:7px;text-decoration:none;transition:filter .2s,box-shadow .2s;}
+    .nav-cta:hover{filter:brightness(1.1);box-shadow:0 0 24px rgba(184,146,74,0.35);}
+    /* HERO */
+    .hero{text-align:center;padding:72px 24px 52px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:400px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.1) 0%,transparent 65%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:22px;border:1px solid rgba(184,146,74,0.2);padding:6px 18px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero-eyebrow::before{content:'◆';font-size:7px;}
+    .hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(40px,6vw,72px);font-weight:700;line-height:1.0;margin-bottom:16px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400;line-height:1.6;max-width:560px;margin:0 auto 32px;}
+    .hero-stats{display:inline-flex;align-items:center;gap:32px;border:1px solid var(--border2);border-radius:100px;padding:10px 28px;background:rgba(255,255,255,0.02);}
+    .hero-stat{text-align:center;}
+    .hero-stat-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold2);}
+    .hero-stat-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+    .hero-div{width:1px;height:32px;background:var(--border2);}
+    /* TOOLS GRID */
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    .section-header{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold2);}
+    .section-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(184,146,74,0.3),transparent);}
+    .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:48px;}
+    /* TOOL CARD */
+    .tool-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:24px;position:relative;overflow:hidden;transition:border-color .25s,transform .2s,box-shadow .25s;text-decoration:none;display:block;}
+    .tool-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.4);}
+    .tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--tool-color,linear-gradient(90deg,transparent,var(--gold),transparent));transition:opacity .2s;}
+    .tool-card::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,var(--tool-glow,rgba(184,146,74,0.04)) 0%,transparent 60%);pointer-events:none;opacity:0;transition:opacity .25s;}
+    .tool-card:hover::after{opacity:1;}
+    .tool-card:hover{border-color:var(--tool-border,rgba(184,146,74,0.2));}
+    .tool-number{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:rgba(184,146,74,0.1);line-height:1;margin-bottom:12px;transition:color .2s;}
+    .tool-card:hover .tool-number{color:rgba(184,146,74,0.18);}
+    .tool-icon{font-size:26px;margin-bottom:10px;}
+    .tool-tag{font-size:8px;text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:8px;color:var(--tool-accent,var(--gold2));}
+    .tool-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.2;}
+    .tool-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+    .tool-badges{display:flex;flex-wrap:wrap;gap:6px;}
+    .badge{font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:100px;}
+    .tool-arrow{position:absolute;bottom:20px;right:20px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);display:grid;place-items:center;font-size:14px;color:var(--muted);transition:border-color .2s,color .2s,background .2s;}
+    .tool-card:hover .tool-arrow{border-color:var(--tool-border,rgba(184,146,74,0.3));color:var(--tool-accent,var(--gold2));background:rgba(184,146,74,0.05);}
+    /* FEATURED (main calculator) */
+    .tool-card.featured{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;}
+    @media(max-width:600px){.tool-card.featured{grid-template-columns:1fr;}}
+    .featured-left{text-align:center;}
+    .featured-number{font-family:'Cormorant Garamond',serif;font-size:80px;font-weight:700;color:rgba(184,146,74,0.12);line-height:1;}
+    /* FOOTER */
+    footer{border-top:1px solid var(--border2);padding:52px 32px 36px;margin-top:48px;background:rgba(5,6,8,0.7);position:relative;}
+    footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:400px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .footer-inner{max-width:1340px;margin:0 auto;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+    @media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr;}}
+    .footer-brand p{color:var(--muted);font-size:12px;margin-top:12px;max-width:260px;line-height:1.7;}
+    .fcol h4{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted2);margin-bottom:14px;}
+    .fcol ul{list-style:none;}
+    .fcol li{margin-bottom:10px;}
+    .fcol a{color:var(--muted);text-decoration:none;font-size:12px;transition:color .2s;}
+    .fcol a:hover{color:var(--gold2);}
+    .footer-bottom{border-top:1px solid var(--border2);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+    .footer-bottom p{font-size:11px;color:var(--muted2);}
+    .footer-bottom a{color:var(--muted2);text-decoration:none;}
+    .footer-bottom a:hover{color:var(--muted);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+    .hero>*:nth-child(4){animation-delay:.3s;}
+    .hero>*:nth-child(5){animation-delay:.35s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div class="nav-wordmark">
+        <span class="nav-name">KAPITALIZE</span>
+        <span class="nav-tagline">Suite patrimoniale premium</span>
+      </div>
+    </a>
+    <a class="nav-cta" href="../">Calculateur →</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">Suite complète · Exclusif Kapitalize</div>
+    <h1>Tous vos outils<br><em>patrimoniaux</em> réunis</h1>
+    <p>11 simulateurs premium gratuits pour comprendre, planifier et visualiser la croissance de votre patrimoine.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-val">11</div><div class="hero-stat-lbl">Outils</div></div>
+      <div class="hero-div"></div>
+      <div class="hero-stat"><div class="hero-stat-val">100%</div><div class="hero-stat-lbl">Gratuit</div></div>
+      <div class="hero-div"></div>
+      <div class="hero-stat"><div class="hero-stat-val">0</div><div class="hero-stat-lbl">Inscription</div></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="section-header">
+      <div class="section-title">Outil principal</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="tools-grid" style="margin-bottom:28px;">
+      <a href="../" class="tool-card featured" style="--tool-color:linear-gradient(90deg,transparent,var(--gold),transparent);--tool-border:rgba(184,146,74,0.3);--tool-glow:rgba(184,146,74,0.08);--tool-accent:var(--gold2);">
+        <div class="featured-left">
+          <div class="featured-number">01</div>
+        </div>
+        <div>
+          <div class="tool-icon">📈</div>
+          <div class="tool-tag">Calculateur central · Kapitalize</div>
+          <div class="tool-name">Simulateur d'Intérêts Composés</div>
+          <div class="tool-desc">Le calculateur complet : capital initial, versements mensuels, taux, durée, capitalisation (jour/mois/trim/an), inflation, flat tax PFU, Chart.js (line + doughnut), KPI cards, règle des 72, CAGR, tableau annuel, objectif cible.</div>
+          <div class="tool-badges">
+            <span class="badge" style="background:rgba(184,146,74,0.1);color:var(--gold2);border:1px solid rgba(184,146,74,0.2);">Calculateur complet</span>
+            <span class="badge" style="background:rgba(62,207,122,0.08);color:var(--green);border:1px solid rgba(62,207,122,0.15);">Flat Tax PFU</span>
+            <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Inflation réelle</span>
+          </div>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Outils spécialisés</div>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="tools-grid">
+
+      <a href="../wealth-timeline/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#d4a855,transparent);--tool-border:rgba(212,168,85,0.3);--tool-glow:rgba(212,168,85,0.07);--tool-accent:#d4a855;">
+        <div class="tool-number">02</div>
+        <div class="tool-icon">📅</div>
+        <div class="tool-tag">Planification · Jalons de vie</div>
+        <div class="tool-name">Wealth Timeline</div>
+        <div class="tool-desc">Placez vos jalons de vie (retraite, immobilier, études) sur votre courbe patrimoniale. Découvrez si votre capital sera suffisant à chaque étape clé.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(212,168,85,0.1);color:#d4a855;border:1px solid rgba(212,168,85,0.2);">Jalons personnalisés</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Statut financé / déficit</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../alter-ego-simulator/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#60a5fa,transparent);--tool-border:rgba(96,165,250,0.3);--tool-glow:rgba(96,165,250,0.06);--tool-accent:#60a5fa;">
+        <div class="tool-number">03</div>
+        <div class="tool-icon">⚡</div>
+        <div class="tool-tag">Comparaison · Stratégies</div>
+        <div class="tool-name">Alter Ego Simulator</div>
+        <div class="tool-desc">Comparez deux stratégies d'investissement en miroir. DCA vs Lump Sum, conservateur vs agressif — découvrez quelle approche gagne sur le long terme.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(96,165,250,0.1);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);">Duel de stratégies</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Verdict comparatif</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../cout-de-linaction/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#ef4444,transparent);--tool-border:rgba(239,68,68,0.3);--tool-glow:rgba(239,68,68,0.06);--tool-accent:#ef4444;">
+        <div class="tool-number">04</div>
+        <div class="tool-icon">⏱</div>
+        <div class="tool-tag">Urgence · Temps réel</div>
+        <div class="tool-name">Coût de l'Inaction</div>
+        <div class="tool-desc">Compteur en temps réel du capital futur perdu chaque seconde. L'outil le plus percutant pour passer à l'action — voir l'argent s'évaporer en direct.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);">Compteur temps réel</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Coût par seconde</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../scenarios-historiques/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#a78bfa,transparent);--tool-border:rgba(167,139,250,0.3);--tool-glow:rgba(167,139,250,0.06);--tool-accent:#a78bfa;">
+        <div class="tool-number">05</div>
+        <div class="tool-icon">📜</div>
+        <div class="tool-tag">Backtesting · Histoire</div>
+        <div class="tool-name">Scénarios Historiques</div>
+        <div class="tool-desc">Simulez votre investissement lors des crises : 2008, COVID, dot-com, stagflation. Découvrez comment les intérêts composés résistent aux chocs historiques.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);">6 scénarios réels</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Taux historiques réels</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../liberte-financiere/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#3ecf7a,transparent);--tool-border:rgba(62,207,122,0.3);--tool-glow:rgba(62,207,122,0.06);--tool-accent:#3ecf7a;">
+        <div class="tool-number">06</div>
+        <div class="tool-icon">🌴</div>
+        <div class="tool-tag">FIRE · Indépendance</div>
+        <div class="tool-name">Liberté Financière</div>
+        <div class="tool-desc">Calculez votre numéro FIRE avec la règle des 4%. Classic, Fat ou Lean FIRE — visualisez quand votre capital vivra à votre place.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(62,207,122,0.1);color:#3ecf7a;border:1px solid rgba(62,207,122,0.2);">Règle des 4%</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">3 types de FIRE</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../dca-irregulier/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#60a5fa,transparent);--tool-border:rgba(96,165,250,0.3);--tool-glow:rgba(96,165,250,0.05);--tool-accent:#60a5fa;">
+        <div class="tool-number">07</div>
+        <div class="tool-icon">📊</div>
+        <div class="tool-tag">DCA · Versements flexibles</div>
+        <div class="tool-name">DCA Irrégulier</div>
+        <div class="tool-desc">Définissez plusieurs phases de versement. Début carrière, promotion, parentalité, accélération — simulez la vraie vie avec des versements variables.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(96,165,250,0.1);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);">Phases multiples</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Courbes par phase</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../export-pdf/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,var(--gold3),transparent);--tool-border:rgba(240,204,128,0.3);--tool-glow:rgba(240,204,128,0.05);--tool-accent:var(--gold3);">
+        <div class="tool-number">08</div>
+        <div class="tool-icon">📄</div>
+        <div class="tool-tag">Rapport · Export PDF</div>
+        <div class="tool-name">Export PDF Premium</div>
+        <div class="tool-desc">Générez un rapport patrimonial PDF de qualité professionnelle signé Kapitalize. Prêt à partager avec votre conseiller financier ou votre famille.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(240,204,128,0.1);color:var(--gold3);border:1px solid rgba(240,204,128,0.2);">Format A4 · 2 pages</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Personnalisable</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../milestones/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,var(--gold2),transparent);--tool-border:rgba(212,168,85,0.3);--tool-glow:rgba(212,168,85,0.07);--tool-accent:var(--gold2);">
+        <div class="tool-number">09</div>
+        <div class="tool-icon">🏆</div>
+        <div class="tool-tag">Paliers · Célébrations</div>
+        <div class="tool-name">Milestones & Célébrations</div>
+        <div class="tool-desc">Visualisez quand vous franchirez 100k€, 500k€ et 1 million d'euros. Avec effets confettis dorés et célébrations animées pour chaque palier atteint.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(212,168,85,0.1);color:var(--gold2);border:1px solid rgba(212,168,85,0.2);">7 paliers symboliques</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">🎊 Confettis animés</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../patrimoine-mondial/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#a78bfa,transparent);--tool-border:rgba(167,139,250,0.3);--tool-glow:rgba(167,139,250,0.06);--tool-accent:#a78bfa;">
+        <div class="tool-number">10</div>
+        <div class="tool-icon">🌍</div>
+        <div class="tool-tag">Percentile · Comparaison mondiale</div>
+        <div class="tool-name">Patrimoine Mondial</div>
+        <div class="tool-desc">Où vous situez-vous dans la distribution mondiale des patrimoines ? Comparez votre capital avec les données INSEE et UBS Wealth Report 2023.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(167,139,250,0.1);color:#a78bfa;border:1px solid rgba(167,139,250,0.2);">Données INSEE 2023</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Top 1% France</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+      <a href="../objets-concrets/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#f0cc80,transparent);--tool-border:rgba(240,204,128,0.3);--tool-glow:rgba(240,204,128,0.06);--tool-accent:#f0cc80;">
+        <div class="tool-number">11</div>
+        <div class="tool-icon">💡</div>
+        <div class="tool-tag">Visualisation · Objets réels</div>
+        <div class="tool-name">En Objets Concrets</div>
+        <div class="tool-desc">Convertissez votre capital projeté en biens tangibles : appartements à Nice, années de salaire médian, nuits au Ritz, Rolex, voyages en Première Classe.</div>
+        <div class="tool-badges">
+          <span class="badge" style="background:rgba(240,204,128,0.1);color:#f0cc80;border:1px solid rgba(240,204,128,0.2);">25+ objets de référence</span>
+          <span class="badge" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border2);">Filtrés par catégorie</span>
+        </div>
+        <div class="tool-arrow">→</div>
+      </a>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="nav-logo" href="../" style="text-decoration:none">
+          <div class="logo-box">K</div>
+          <div class="nav-wordmark"><span class="nav-name">KAPITALIZE</span></div>
+        </a>
+        <p>La suite d'outils patrimoniaux premium. 11 simulateurs gratuits, sans inscription, sans publicité.</p>
+      </div>
+      <div class="fcol"><h4>Outils</h4><ul>
+        <li><a href="../">Calculateur principal</a></li>
+        <li><a href="../wealth-timeline/">Wealth Timeline</a></li>
+        <li><a href="../alter-ego-simulator/">Alter Ego Simulator</a></li>
+        <li><a href="../cout-de-linaction/">Coût de l'Inaction</a></li>
+        <li><a href="../scenarios-historiques/">Scénarios Historiques</a></li>
+      </ul></div>
+      <div class="fcol"><h4>Simulateurs</h4><ul>
+        <li><a href="../liberte-financiere/">Liberté Financière FIRE</a></li>
+        <li><a href="../dca-irregulier/">DCA Irrégulier</a></li>
+        <li><a href="../milestones/">Milestones & Paliers</a></li>
+        <li><a href="../patrimoine-mondial/">Patrimoine Mondial</a></li>
+        <li><a href="../objets-concrets/">Objets Concrets</a></li>
+      </ul></div>
+      <div class="fcol"><h4>Références</h4><ul>
+        <li><a href="../export-pdf/">Export PDF Premium</a></li>
+        <li><a href="https://www.amf-france.org" target="_blank" rel="noopener">AMF France</a></li>
+        <li><a href="https://www.banque-france.fr" target="_blank" rel="noopener">Banque de France</a></li>
+        <li><a href="https://www.insee.fr" target="_blank" rel="noopener">INSEE</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Kapitalize — Suite d'outils pédagogiques · <strong>Pas un conseil financier</strong></p>
+      <p>Données : INSEE 2023 · Banque de France · UBS Wealth Report 2023</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,particles=[],time=0;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}resize();for(let i=0;i<120;i++)particles.push(mkP());window.addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);time+=.004;[{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(62,207,122,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4+Math.cos(time*.2)*60,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+</script>
+</body>
+</html>

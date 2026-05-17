@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alter Ego Simulator — Comparez 2 stratégies d'investissement | Kapitalize</title>
+  <meta name="description" content="Comparez deux stratégies d'investissement en miroir. Découvrez quelle approche génère le plus de capital sur le long terme avec ce simulateur exclusif."/>
+  <meta name="keywords" content="comparaison investissement, simulation stratégie, DCA vs lump sum, intérêts composés comparatif, alter ego simulator, deux stratégies épargne"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/alter-ego-simulator/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#050608;--bg2:#080a0e;--bg3:#0d1018;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--blue:#60a5fa;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,0.6);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;box-shadow:0 0 20px rgba(184,146,74,0.4);}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;letter-spacing:.1em;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s,background .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.12) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:20px;border:1px solid rgba(184,146,74,0.2);padding:6px 16px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,58px);font-weight:700;line-height:1.05;margin-bottom:14px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:500px;margin:0 auto;}
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    /* VS LAYOUT */
+    .vs-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;margin-bottom:16px;}
+    @media(max-width:900px){.vs-grid{grid-template-columns:1fr;}}
+    .vs-divider{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:60px;gap:12px;}
+    .vs-badge{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--muted2);letter-spacing:.1em;writing-mode:vertical-rl;padding:16px 0;}
+    .vs-line{width:1px;flex:1;background:linear-gradient(180deg,transparent,rgba(184,146,74,0.2),transparent);}
+    /* STRATEGY PANEL */
+    .strat-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;}
+    .strat-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+    .strat-a::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .strat-b::before{background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+    .strat-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+    .strat-letter{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;flex-shrink:0;}
+    .strat-a .strat-letter{background:linear-gradient(135deg,rgba(184,146,74,0.2),rgba(184,146,74,0.05));color:var(--gold2);border:1px solid rgba(184,146,74,0.3);}
+    .strat-b .strat-letter{background:linear-gradient(135deg,rgba(96,165,250,0.2),rgba(96,165,250,0.05));color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+    .strat-name-input{flex:1;background:transparent;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:4px 0;outline:none;transition:border-color .2s;}
+    .strat-name-input:focus{border-color:rgba(184,146,74,0.4);}
+    .field{margin-bottom:14px;}
+    .field-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .field-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em;}
+    .field-value{font-size:13px;font-weight:700;font-family:'Cormorant Garamond',serif;}
+    .strat-a .field-value{color:var(--gold3);}
+    .strat-b .field-value{color:#93c5fd;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;border-radius:2px;outline:none;cursor:pointer;}
+    .strat-a input[type="range"]{background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));}
+    .strat-b input[type="range"]{background:linear-gradient(to right,var(--blue) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    .strat-b input[type="range"]::-webkit-slider-thumb{background:radial-gradient(circle,#bfdbfe 30%,var(--blue) 100%);box-shadow:0 0 10px rgba(96,165,250,0.5);}
+    .field-num{background:rgba(255,255,255,0.03);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;padding:8px 36px 8px 12px;width:100%;outline:none;margin-top:7px;-moz-appearance:textfield;}
+    .field-num::-webkit-inner-spin-button{display:none;}
+    .field-num:focus{border-color:rgba(184,146,74,0.4);background:rgba(184,146,74,0.03);}
+    .strat-b .field-num:focus{border-color:rgba(96,165,250,0.4);background:rgba(96,165,250,0.03);}
+    .input-wrap{position:relative;}
+    .input-unit{position:absolute;right:11px;top:50%;transform:translateY(-65%);color:var(--muted2);font-size:11px;pointer-events:none;font-weight:600;}
+    /* RESULT BOX */
+    .strat-result{margin-top:18px;padding:16px;border-radius:9px;text-align:center;}
+    .strat-a .strat-result{background:rgba(184,146,74,0.06);border:1px solid rgba(184,146,74,0.2);}
+    .strat-b .strat-result{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.2);}
+    .result-label{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-bottom:6px;font-weight:700;}
+    .result-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;line-height:1;}
+    .strat-a .result-val{color:var(--gold2);}
+    .strat-b .result-val{color:var(--blue);}
+    .result-sub{font-size:11px;color:var(--muted);margin-top:5px;}
+    .winner-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-top:8px;}
+    .winner-badge.gold{background:rgba(212,168,85,0.15);color:var(--gold2);border:1px solid rgba(212,168,85,0.3);}
+    .winner-badge.blue{background:rgba(96,165,250,0.15);color:var(--blue);border:1px solid rgba(96,165,250,0.3);}
+    .winner-badge.tie{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border2);}
+    /* CHART */
+    .chart-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;margin-bottom:16px;position:relative;overflow:hidden;}
+    .chart-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .chart-wrap{position:relative;height:320px;}
+    /* SCORE */
+    .score-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:28px;position:relative;overflow:hidden;text-align:center;}
+    .score-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .score-title{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--muted);margin-bottom:20px;font-weight:700;}
+    .score-compare{display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;}
+    .score-item{text-align:center;}
+    .score-num{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:700;line-height:1;}
+    .score-desc{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.04em;}
+    .score-vs{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--muted2);font-weight:700;}
+    .diff-bar{height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;margin:20px 0 8px;position:relative;}
+    .diff-fill{height:100%;border-radius:4px;transition:width .6s ease;position:absolute;top:0;}
+    .diff-fill-a{background:linear-gradient(90deg,var(--gold),var(--gold2));left:0;}
+    .diff-fill-b{background:linear-gradient(90deg,var(--blue),#93c5fd);right:0;}
+    .diff-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}
+    footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Alter Ego Simulator</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">Comparaison exclusive · Kapitalize</div>
+    <h1><em>Alter Ego</em> Simulator<br>Quelle stratégie gagne ?</h1>
+    <p>Paramétrez deux approches d'investissement et découvrez laquelle crée le plus de richesse sur le long terme.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="vs-grid">
+      <!-- STRATEGY A -->
+      <div class="strat-panel strat-a">
+        <div class="strat-header">
+          <div class="strat-letter">A</div>
+          <input type="text" class="strat-name-input" id="name-a" value="Investisseur Régulier" placeholder="Nom de la stratégie A"/>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Capital initial</span><span class="field-value" id="va-p">10 000 €</span></div>
+          <input type="range" id="ra-p" min="0" max="500000" step="500" value="10000"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="na-p" value="10000"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Versement mensuel</span><span class="field-value" id="va-m">200 €</span></div>
+          <input type="range" id="ra-m" min="0" max="5000" step="50" value="200"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="na-m" value="200"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Taux annuel</span><span class="field-value" id="va-r">7,0 %</span></div>
+          <input type="range" id="ra-r" min="0" max="20" step="0.1" value="7"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="na-r" value="7" step="0.1"/><span class="input-unit">%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Durée</span><span class="field-value" id="va-y">25 ans</span></div>
+          <input type="range" id="ra-y" min="1" max="60" step="1" value="25"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="na-y" value="25"/><span class="input-unit">ans</span></div>
+        </div>
+        <div class="strat-result">
+          <div class="result-label">Capital final — Stratégie A</div>
+          <div class="result-val" id="res-a">—</div>
+          <div class="result-sub" id="res-a-sub">—</div>
+          <div id="badge-a"></div>
+        </div>
+      </div>
+
+      <!-- VS -->
+      <div class="vs-divider">
+        <div class="vs-line"></div>
+        <div class="vs-badge">VS</div>
+        <div class="vs-line"></div>
+      </div>
+
+      <!-- STRATEGY B -->
+      <div class="strat-panel strat-b">
+        <div class="strat-header">
+          <div class="strat-letter">B</div>
+          <input type="text" class="strat-name-input" id="name-b" value="Investisseur Agressif" placeholder="Nom de la stratégie B"/>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Capital initial</span><span class="field-value" id="vb-p">50 000 €</span></div>
+          <input type="range" id="rb-p" min="0" max="500000" step="500" value="50000"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nb-p" value="50000"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Versement mensuel</span><span class="field-value" id="vb-m">500 €</span></div>
+          <input type="range" id="rb-m" min="0" max="5000" step="50" value="500"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nb-m" value="500"/><span class="input-unit">€</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Taux annuel</span><span class="field-value" id="vb-r">5,0 %</span></div>
+          <input type="range" id="rb-r" min="0" max="20" step="0.1" value="5"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nb-r" value="5" step="0.1"/><span class="input-unit">%</span></div>
+        </div>
+        <div class="field">
+          <div class="field-row"><span class="field-label">Durée</span><span class="field-value" id="vb-y">25 ans</span></div>
+          <input type="range" id="rb-y" min="1" max="60" step="1" value="25"/>
+          <div class="input-wrap"><input type="number" class="field-num" id="nb-y" value="25"/><span class="input-unit">ans</span></div>
+        </div>
+        <div class="strat-result">
+          <div class="result-label">Capital final — Stratégie B</div>
+          <div class="result-val" id="res-b">—</div>
+          <div class="result-sub" id="res-b-sub">—</div>
+          <div id="badge-b"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCORE PANEL -->
+    <div class="score-panel" style="margin-bottom:16px;">
+      <div class="score-title">Verdict comparatif</div>
+      <div class="score-compare">
+        <div class="score-item">
+          <div class="score-num" id="sc-a" style="color:var(--gold2);">—</div>
+          <div class="score-desc" id="sc-a-name">Stratégie A</div>
+        </div>
+        <div class="score-vs">vs</div>
+        <div class="score-item">
+          <div class="score-num" id="sc-b" style="color:var(--blue);">—</div>
+          <div class="score-desc" id="sc-b-name">Stratégie B</div>
+        </div>
+      </div>
+      <div class="diff-bar" style="margin-top:24px;">
+        <div class="diff-fill diff-fill-a" id="bar-a" style="width:50%;"></div>
+        <div class="diff-fill diff-fill-b" id="bar-b" style="width:50%;"></div>
+      </div>
+      <div class="diff-labels">
+        <span id="dl-a">—</span>
+        <span id="dl-verdict" style="color:var(--gold2);font-weight:700;">—</span>
+        <span id="dl-b">—</span>
+      </div>
+    </div>
+
+    <div class="chart-panel">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:14px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);display:inline-block;"></span>Courbes de croissance comparées</div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Outil pédagogique, pas un conseil financier · <a href="../">Retour au calculateur principal</a></p>
+</footer>
+
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,particles=[],time=0;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}
+  resize();for(let i=0;i<100;i++)particles.push(mkP());
+  window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);time+=.004;
+    [{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(96,165,250,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4+Math.cos(time*.2)*60,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});
+    ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;
+    for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+let chartInst=null;
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+
+function updateGrad(el,color){
+  const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);
+  el.style.setProperty('--pct',pct+'%');
+}
+
+function buildCurve(P,m,r,t){
+  const vals=[P],N=12;let cap=P;
+  for(let y=1;y<=t;y++){for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}vals.push(cap);}
+  return vals;
+}
+
+function pair(r,n,d,sfx,color){
+  const re=document.getElementById(r),ne=document.getElementById(n),de=d?document.getElementById(d):null;
+  function upd(src){re.value=src.value;ne.value=src.value;updateGrad(re,color);if(de){const v=+src.value;de.textContent=sfx==='%'?v.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1})+' %':sfx==='ans'?v+' ans':v.toLocaleString('fr-FR')+' €';}calc();}
+  re.addEventListener('input',()=>upd(re));ne.addEventListener('input',()=>upd(ne));updateGrad(re,color);
+}
+
+pair('ra-p','na-p','va-p','€','gold');pair('ra-m','na-m','va-m','€','gold');pair('ra-r','na-r','va-r','%','gold');pair('ra-y','na-y','va-y','ans','gold');
+pair('rb-p','nb-p','vb-p','€','blue');pair('rb-m','nb-m','vb-m','€','blue');pair('rb-r','nb-r','vb-r','%','blue');pair('rb-y','nb-y','vb-y','ans','blue');
+['name-a','name-b'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+
+function calc(){
+  const Pa=+document.getElementById('na-p').value||0,ma=+document.getElementById('na-m').value||0,ra=+document.getElementById('na-r').value/100||0,ta=+document.getElementById('na-y').value||1;
+  const Pb=+document.getElementById('nb-p').value||0,mb=+document.getElementById('nb-m').value||0,rb=+document.getElementById('nb-r').value/100||0,tb=+document.getElementById('nb-y').value||1;
+  const nameA=document.getElementById('name-a').value||'Stratégie A';
+  const nameB=document.getElementById('name-b').value||'Stratégie B';
+  const t=Math.max(ta,tb);
+
+  const valsA=buildCurve(Pa,ma,ra,ta);
+  const valsB=buildCurve(Pb,mb,rb,tb);
+  const fvA=valsA[valsA.length-1];
+  const fvB=valsB[valsB.length-1];
+  const depA=Pa+ma*12*ta, depB=Pb+mb*12*tb;
+  const multA=Pa>0?(fvA/Pa).toFixed(1):'—';
+  const multB=Pb>0?(fvB/Pb).toFixed(1):'—';
+
+  document.getElementById('res-a').textContent=fmtK(fvA);
+  document.getElementById('res-a-sub').textContent='Investi: '+fmtK(depA)+' · ×'+multA;
+  document.getElementById('res-b').textContent=fmtK(fvB);
+  document.getElementById('res-b-sub').textContent='Investi: '+fmtK(depB)+' · ×'+multB;
+
+  const diff=Math.abs(fvA-fvB);
+  const aWins=fvA>fvB,tie=Math.abs(fvA-fvB)<100;
+  document.getElementById('badge-a').innerHTML=aWins&&!tie?'<div class="winner-badge gold">🏆 Gagnante</div>':tie?'<div class="winner-badge tie">Égalité</div>':'';
+  document.getElementById('badge-b').innerHTML=!aWins&&!tie?'<div class="winner-badge blue">🏆 Gagnante</div>':tie?'':'';
+
+  document.getElementById('sc-a').textContent=fmtK(fvA);
+  document.getElementById('sc-b').textContent=fmtK(fvB);
+  document.getElementById('sc-a-name').textContent=nameA;
+  document.getElementById('sc-b-name').textContent=nameB;
+  const total=fvA+fvB||1;
+  const pctA=(fvA/total*100).toFixed(0);
+  document.getElementById('bar-a').style.width=pctA+'%';
+  document.getElementById('bar-b').style.width=(100-+pctA)+'%';
+  document.getElementById('dl-a').textContent=nameA;
+  document.getElementById('dl-b').textContent=nameB;
+  document.getElementById('dl-verdict').textContent=tie?'Égalité parfaite':aWins?nameA+' gagne de '+fmtK(diff):nameB+' gagne de '+fmtK(diff);
+
+  // chart
+  const labels=[];
+  const maxT=Math.max(ta,tb);
+  for(let i=0;i<=maxT;i++)labels.push('An '+i);
+  const dsA=valsA.concat(Array(Math.max(0,maxT-ta)).fill(null));
+  const dsB=valsB.concat(Array(Math.max(0,maxT-tb)).fill(null));
+
+  if(chartInst)chartInst.destroy();
+  const ctx2=document.getElementById('chart').getContext('2d');
+  const gradA=ctx2.createLinearGradient(0,0,0,320);
+  gradA.addColorStop(0,'rgba(184,146,74,0.2)');gradA.addColorStop(1,'rgba(184,146,74,0)');
+  const gradB=ctx2.createLinearGradient(0,0,0,320);
+  gradB.addColorStop(0,'rgba(96,165,250,0.15)');gradB.addColorStop(1,'rgba(96,165,250,0)');
+
+  chartInst=new Chart(ctx2,{type:'line',data:{labels,datasets:[
+    {label:nameA,data:dsA,borderColor:'#b8924a',backgroundColor:gradA,fill:true,tension:.45,pointRadius:0,borderWidth:2},
+    {label:nameB,data:dsB,borderColor:'#60a5fa',backgroundColor:gradB,fill:true,tension:.45,pointRadius:0,borderWidth:2}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a8090',font:{family:'Syne',size:10},boxWidth:10,padding:20}},tooltip:{backgroundColor:'rgba(8,10,14,0.95)',borderColor:'rgba(184,146,74,0.2)',borderWidth:1,titleColor:'#e8e4dc',bodyColor:'#7a8090',titleFont:{family:'Syne',size:11,weight:'700'},bodyFont:{family:'Syne',size:11},padding:12,callbacks:{label:c=>' '+c.dataset.label+': '+fmtK(c.parsed.y)}}},scales:{x:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},maxTicksLimit:10},grid:{color:'rgba(255,255,255,0.025)'}},y:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M€':v>=1e3?(v/1e3).toFixed(0)+'k€':v+'€'},grid:{color:'rgba(255,255,255,0.025)'}}}}});
+}
+calc();
+</script>
+</body>
+</html>

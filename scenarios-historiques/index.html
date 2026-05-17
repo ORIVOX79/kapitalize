@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Scénarios Historiques — Que se serait-il passé lors des crises ? | Kapitalize</title>
+  <meta name="description" content="Simulez l'évolution de votre investissement lors des grandes crises financières : 2008, COVID, dot-com, stagflation. Découvrez la résilience des intérêts composés face à l'histoire."/>
+  <meta name="keywords" content="simulation crise financière, crise 2008 investissement, COVID bourse, dot-com bubble, stagflation investissement, intérêts composés historique, backtesting"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/scenarios-historiques/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--red:#ef4444;--blue:#60a5fa;--orange:#fb923c;--purple:#a78bfa;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,0.6);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s,background .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.1) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:18px;border:1px solid rgba(184,146,74,0.2);padding:6px 16px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5vw,58px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:520px;margin:0 auto;}
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    /* PARAMS */
+    .params-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+    .param-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;}
+    .param-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .param-label{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-bottom:8px;font-weight:700;}
+    .param-val{font-size:12px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;margin-bottom:6px;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    /* SCENARIO PICKER */
+    .scenarios-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:20px;}
+    .scenario-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:18px;cursor:pointer;transition:border-color .2s,box-shadow .2s,background .2s;position:relative;overflow:hidden;}
+    .scenario-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.2),transparent);}
+    .scenario-card.active{border-color:var(--scenario-color,var(--gold));box-shadow:0 0 30px color-mix(in srgb,var(--scenario-color,var(--gold)) 15%,transparent);}
+    .scenario-card:hover:not(.active){border-color:rgba(184,146,74,0.2);}
+    .sc-era{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:700;margin-bottom:8px;}
+    .sc-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+    .sc-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:100px;margin-bottom:8px;}
+    .sc-desc{font-size:10px;color:var(--muted);line-height:1.5;}
+    .sc-cagr{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;margin-top:10px;}
+    /* CHART & RESULTS */
+    .results-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px;}
+    @media(max-width:800px){.results-grid{grid-template-columns:1fr;}}
+    .chart-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;}
+    .chart-panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .chart-wrap{position:relative;height:300px;}
+    .panel-title{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+    .panel-title::before{content:'';width:14px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+    .kpis{display:flex;flex-direction:column;gap:10px;}
+    .kpi{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;flex:1;}
+    .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.2),transparent);}
+    .kpi.hl{border-color:rgba(184,146,74,0.25);}
+    .kpi-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px;font-weight:700;}
+    .kpi-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--text);}
+    .kpi.hl .kpi-val{color:var(--gold2);}
+    .kpi-sub{font-size:10px;color:var(--muted);margin-top:4px;}
+    /* YEAR TABLE */
+    .tbl-panel{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);overflow:hidden;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    thead th{background:rgba(255,255,255,0.02);color:var(--muted);font-weight:700;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:11px 14px;border-bottom:1px solid var(--border2);text-align:right;}
+    thead th:first-child{text-align:left;}
+    tbody tr{border-top:1px solid rgba(255,255,255,0.03);}
+    tbody tr:hover{background:rgba(184,146,74,0.025);}
+    tbody td{padding:9px 14px;color:var(--muted);text-align:right;font-size:12px;}
+    tbody td:first-child{text-align:left;color:var(--text);font-weight:700;font-family:'Cormorant Garamond',serif;font-size:13px;}
+    .tg{color:var(--green)!important;font-weight:600;}
+    .tr{color:var(--red)!important;font-weight:600;}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Scénarios Historiques</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">Backtesting historique · Kapitalize</div>
+    <h1>Et si vous aviez<br>investi pendant <em>les crises</em> ?</h1>
+    <p>Découvrez comment votre capital aurait évolué lors des grands chocs financiers de l'histoire avec les rendements réels de chaque époque.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- PARAMS -->
+    <div class="params-row">
+      <div class="param-card">
+        <div class="param-label">Capital initial</div>
+        <div class="param-val" id="vhs-p">10 000 €</div>
+        <input type="range" id="rhs-p" min="0" max="200000" step="1000" value="10000"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Versement mensuel</div>
+        <div class="param-val" id="vhs-m">200 €</div>
+        <input type="range" id="rhs-m" min="0" max="3000" step="50" value="200"/>
+      </div>
+    </div>
+
+    <!-- SCENARIOS -->
+    <div class="scenarios-grid" id="scenarios-grid"></div>
+
+    <!-- RESULTS -->
+    <div class="results-grid">
+      <div class="chart-panel">
+        <div class="panel-title" id="chart-title">Évolution du capital — Scénario sélectionné</div>
+        <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      </div>
+      <div class="kpis">
+        <div class="kpi hl"><div class="kpi-lbl">Capital final</div><div class="kpi-val" id="kFin">—</div><div class="kpi-sub" id="kFinSub">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Gain / Perte</div><div class="kpi-val" id="kGain">—</div><div class="kpi-sub" id="kGainSub">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Capital investi</div><div class="kpi-val" id="kDep">—</div><div class="kpi-sub">apports cumulés</div></div>
+        <div class="kpi"><div class="kpi-lbl">CAGR réel</div><div class="kpi-val" id="kCagr">—</div><div class="kpi-sub">taux annualisé</div></div>
+      </div>
+    </div>
+
+    <div class="tbl-panel">
+      <div class="panel-title" style="padding:16px 18px 0;">Évolution annuelle</div>
+      <table><thead><tr><th>Année</th><th>Taux réel</th><th>Capital début</th><th>Apports</th><th>Capital fin</th><th>Variation</th></tr></thead>
+      <tbody id="hs-tbody"></tbody></table>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Taux basés sur les rendements historiques S&P 500. Les performances passées ne préjugent pas des performances futures. Outil pédagogique uniquement.</p>
+</footer>
+
+<script>
+// Historical scenario data — annual returns based on real market data
+const SCENARIOS=[
+  {
+    id:'sp500_long',era:'Long terme',title:'S&P 500 — 30 ans',badge:'Référence',badgeColor:'var(--gold)',scColor:'var(--gold)',desc:'Le marché américain sur 30 ans intégrant les meilleures et pires décennies.',
+    returns:[23.9,7.1,10.5,1.3,-8.9,26.3,20.3,31,28.6,-9.1,-11.9,-22.1,28.7,10.9,4.9,15.8,5.5,-37,26.5,15.1,2.1,16,32.4,13.7,1.4,12,21.8,-4.4,31.5,18.4]
+  },
+  {
+    id:'crise2008',era:'2005–2015',title:'Crise des Subprimes',badge:'−57% en 2008',badgeColor:'var(--red)',scColor:'var(--red)',desc:'La pire crise depuis 1929. Les marchés s\'effondrent, puis rebondissent violemment.',
+    returns:[4.9,15.8,5.5,-37,26.5,15.1,2.1,16,32.4,13.7,1.4]
+  },
+  {
+    id:'covid',era:'2017–2023',title:'Crash COVID-19',badge:'−34% en 2020',badgeColor:'var(--orange)',scColor:'var(--orange)',desc:'L\'effondrement le plus rapide de l\'histoire (-34% en 23 jours) suivi d\'un rebond record.',
+    returns:[21.8,-4.4,31.5,18.4,-4.4,28.7,26.3]
+  },
+  {
+    id:'dotcom',era:'1995–2012',title:'Bulle Dot-com',badge:'−49% sur 3 ans',badgeColor:'var(--purple)',scColor:'var(--purple)',desc:'L\'euphorie d\'internet, l\'éclatement brutal, puis la reconstruction lente sur une décennie.',
+    returns:[37.6,23,33.4,28.6,-9.1,-11.9,-22.1,28.7,10.9,4.9,15.8,5.5,-37,26.5,15.1,2.1,16,32.4]
+  },
+  {
+    id:'stagflation',era:'1970–1982',title:'Stagflation des 70s',badge:'Inflation >10%',badgeColor:'var(--blue)',scColor:'var(--blue)',desc:'Chocs pétroliers, inflation galopante et récession simultanée. La décennie oubliée.',
+    returns:[4,-8.5,18.9,-14.3,-26.5,37.2,23.9,-7.2,6.6,18.6,32.4,6.1,-4.9]
+  },
+  {
+    id:'goldendecade',era:'1990–1999',title:'Les Trente Glorieuses 2.0',badge:'+400% sur 10 ans',badgeColor:'var(--green)',scColor:'var(--green)',desc:'La meilleure décennie du siècle pour les marchés actions. La croissance sans interruption.',
+    returns:[-3.1,30.5,7.7,10,1.3,-1.5,37.6,23,33.4,28.6]
+  }
+];
+
+let activeScenario=SCENARIOS[0],chartInst=null;
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+['rhs-p','rhs-m'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    updateGrad(el);
+    document.getElementById('vhs-p').textContent=(+document.getElementById('rhs-p').value).toLocaleString('fr-FR')+' €';
+    document.getElementById('vhs-m').textContent=(+document.getElementById('rhs-m').value).toLocaleString('fr-FR')+' €';
+    render();
+  });
+  updateGrad(el);
+});
+
+// Build scenario cards
+const grid=document.getElementById('scenarios-grid');
+SCENARIOS.forEach(sc=>{
+  const avgReturn=(sc.returns.reduce((a,b)=>a+b,0)/sc.returns.length).toFixed(1);
+  const div=document.createElement('div');
+  div.className='scenario-card'+(sc===activeScenario?' active':'');
+  div.style.setProperty('--scenario-color',sc.scColor);
+  div.innerHTML=`<div class="sc-era">${sc.era}</div><div class="sc-title">${sc.title}</div><span class="sc-badge" style="background:color-mix(in srgb,${sc.badgeColor} 15%,transparent);color:${sc.badgeColor};border:1px solid color-mix(in srgb,${sc.badgeColor} 30%,transparent)">${sc.badge}</span><div class="sc-desc">${sc.desc}</div><div class="sc-cagr" style="color:${sc.scColor}">~${avgReturn}%/an moy.</div>`;
+  div.addEventListener('click',()=>{activeScenario=sc;document.querySelectorAll('.scenario-card').forEach(c=>c.classList.remove('active'));div.classList.add('active');render();});
+  grid.appendChild(div);
+});
+
+function render(){
+  const P=+document.getElementById('rhs-p').value||0,m=+document.getElementById('rhs-m').value||0;
+  const sc=activeScenario;
+  const t=sc.returns.length;
+  const labels=[],totals=[],deps=[];
+  let cap=P,totalDep=P;
+  labels.push('Début');totals.push(cap);deps.push(P);
+  const yearData=[];
+
+  sc.returns.forEach((ret,i)=>{
+    const st=cap,stDep=totalDep;
+    // Monthly contributions throughout the year
+    for(let month=0;month<12;month++){cap*=(1+ret/100/12);cap+=m;totalDep+=m;}
+    const gain=cap-st-(totalDep-stDep);
+    yearData.push({yr:sc.era.split('–')[0]?+sc.era.split('–')[0]+i:i+1,ret,st,dep:totalDep-stDep,cap,gain,var:((cap-st)/st*100)});
+    labels.push('An '+(i+1));totals.push(cap);deps.push(totalDep);
+  });
+
+  const fv=cap,dep=totalDep;
+  const gain=fv-dep;
+  const cagr=(Math.pow(fv/Math.max(P,1),1/t)-1)*100;
+
+  document.getElementById('kFin').textContent=fmtK(fv);
+  document.getElementById('kFinSub').textContent='sur '+t+' ans · '+sc.era;
+  document.getElementById('kGain').textContent=(gain>=0?'+':'')+fmtK(gain);
+  document.getElementById('kGain').style.color=gain>=0?'var(--green)':'var(--red)';
+  document.getElementById('kGainSub').textContent=gain>=0?'plus-value nette':'moins-value nette';
+  document.getElementById('kDep').textContent=fmtK(dep);
+  document.getElementById('kCagr').textContent=(cagr>=0?'+':'')+cagr.toFixed(2)+' %';
+  document.getElementById('kCagr').style.color=cagr>=0?'var(--green)':'var(--red)';
+  document.getElementById('chart-title').textContent=sc.title+' — Évolution du capital';
+
+  const tbody=document.getElementById('hs-tbody');tbody.innerHTML='';
+  yearData.forEach((row,i)=>{
+    const tr=document.createElement('tr');
+    const retClass=row.ret>=0?'tg':'tr';
+    const varClass=row.var>=0?'tg':'tr';
+    tr.innerHTML=`<td>${sc.era.split('–')[0]?+sc.era.split('–')[0]+i:i+1}</td><td class="${retClass}">${row.ret>=0?'+':''}${row.ret.toFixed(1)} %</td><td>${fmtK(row.st)}</td><td>${fmtK(row.dep)}</td><td>${fmtK(row.cap)}</td><td class="${varClass}">${row.var>=0?'+':''}${row.var.toFixed(1)} %</td>`;
+    tbody.appendChild(tr);
+  });
+
+  if(chartInst)chartInst.destroy();
+  const ctx2=document.getElementById('chart').getContext('2d');
+  const gradMain=ctx2.createLinearGradient(0,0,0,300);
+  gradMain.addColorStop(0,'rgba(184,146,74,0.2)');gradMain.addColorStop(1,'rgba(184,146,74,0)');
+  const gradDep=ctx2.createLinearGradient(0,0,0,300);
+  gradDep.addColorStop(0,'rgba(62,207,122,0.1)');gradDep.addColorStop(1,'rgba(62,207,122,0)');
+
+  // Mark crisis years
+  const crisisPoints=sc.returns.map((r,i)=>({x:i+1,y:totals[i+1],crisis:r<-15}));
+
+  chartInst=new Chart(ctx2,{type:'line',data:{labels,datasets:[
+    {label:'Capital total',data:totals,borderColor:'#b8924a',backgroundColor:gradMain,fill:true,tension:.4,pointRadius:0,borderWidth:2},
+    {label:'Apports cumulés',data:deps,borderColor:'#3ecf7a',backgroundColor:gradDep,fill:true,tension:.4,pointRadius:0,borderWidth:1.5,borderDash:[4,4]}
+  ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,position:'bottom',labels:{color:'#7a8090',font:{family:'Syne',size:10},boxWidth:10,padding:16}},tooltip:{backgroundColor:'rgba(8,10,14,0.95)',borderColor:'rgba(184,146,74,0.2)',borderWidth:1,titleColor:'#e8e4dc',bodyColor:'#7a8090',titleFont:{family:'Syne',size:11,weight:'700'},bodyFont:{family:'Syne',size:11},padding:12,callbacks:{label:c=>' '+c.dataset.label+': '+fmtK(c.parsed.y)}}},scales:{x:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'}},grid:{color:'rgba(255,255,255,0.025)'}},y:{ticks:{color:'#3a404c',font:{size:10,family:'Syne'},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M€':v>=1e3?(v/1e3).toFixed(0)+'k€':v+'€'},grid:{color:'rgba(255,255,255,0.025)'}}}}});
+}
+
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,particles=[],time=0;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}
+  resize();for(let i=0;i<100;i++)particles.push(mkP());
+  window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);time+=.004;
+    [{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(62,207,122,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});
+    ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;
+    for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+render();
+</script>
+</body>
+</html>

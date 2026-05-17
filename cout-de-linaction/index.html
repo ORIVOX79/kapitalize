@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Le Coût de l'Inaction — Chaque seconde compte | Kapitalize</title>
+  <meta name="description" content="Découvrez combien vous coûte chaque seconde passée sans investir. Compteur en temps réel du capital futur perdu par inaction. L'outil le plus percutant pour passer à l'action."/>
+  <meta name="keywords" content="coût inaction investissement, procrastination investissement, combien perdre sans investir, urgence investir, intérêts composés temps réel"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/cout-de-linaction/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--red:#ef4444;--red2:#dc2626;--green:#3ecf7a;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);box-shadow:0 1px 40px rgba(0,0,0,0.6);}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s,background .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .wrap{max-width:1000px;margin:0 auto;padding:0 32px 80px;}
+    /* HERO */
+    .hero{text-align:center;padding:60px 24px 48px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse at 50% 0%,rgba(239,68,68,0.1) 0%,transparent 65%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#f87171;margin-bottom:20px;border:1px solid rgba(239,68,68,0.25);padding:6px 16px;border-radius:100px;background:rgba(239,68,68,0.06);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:700;line-height:1.05;margin-bottom:14px;}
+    .hero h1 em{font-style:italic;color:#f87171;}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:18px;line-height:1.6;max-width:520px;margin:0 auto;}
+    /* PARAMS */
+    .params-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:28px;}
+    .param-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;}
+    .param-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .param-label{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-bottom:10px;font-weight:700;}
+    .param-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+    .param-val{font-size:12px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    /* CLOCK STAGE */
+    .clock-stage{text-align:center;margin:0 0 28px;position:relative;}
+    .clock-label{font-size:9px;text-transform:uppercase;letter-spacing:.2em;color:#f87171;font-weight:700;margin-bottom:12px;}
+    .clock-counter{font-family:'DM Mono',monospace;font-size:clamp(48px,8vw,96px);font-weight:500;color:#f87171;line-height:1;letter-spacing:-.02em;position:relative;display:inline-block;text-shadow:0 0 60px rgba(239,68,68,0.4),0 0 120px rgba(239,68,68,0.15);}
+    .clock-counter::after{content:'';position:absolute;inset:-8px;background:radial-gradient(ellipse,rgba(239,68,68,0.08) 0%,transparent 70%);border-radius:50%;pointer-events:none;animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.05);}}
+    .clock-unit{font-family:'Syne',sans-serif;font-size:12px;color:#f87171;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.7;}
+    .clock-sub{font-size:14px;color:var(--muted);font-family:'Cormorant Garamond',serif;margin-top:12px;line-height:1.5;}
+    /* RATES */
+    .rates-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:28px;}
+    .rate-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:18px;text-align:center;transition:border-color .2s,box-shadow .2s;}
+    .rate-card:hover{border-color:rgba(239,68,68,0.2);box-shadow:0 0 24px rgba(239,68,68,0.06);}
+    .rate-icon{font-size:20px;margin-bottom:8px;}
+    .rate-label{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;font-weight:700;}
+    .rate-val{font-family:'DM Mono',monospace;font-size:18px;color:#f87171;font-weight:500;}
+    .rate-period{font-size:10px;color:var(--muted2);margin-top:4px;}
+    /* PERSPECTIVE */
+    .perspective{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid rgba(239,68,68,0.15);border-radius:var(--r);padding:28px;margin-bottom:28px;position:relative;overflow:hidden;}
+    .perspective::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(239,68,68,0.3),transparent);}
+    .persp-title{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:#f87171;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .persp-title::before{content:'';width:14px;height:1px;background:linear-gradient(90deg,#ef4444,transparent);}
+    .persp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+    .persp-item{text-align:center;padding:14px;background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.1);border-radius:9px;}
+    .persp-val{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#f87171;margin-bottom:4px;}
+    .persp-desc{font-size:10px;color:var(--muted);letter-spacing:.04em;}
+    /* CTA */
+    .cta-block{text-align:center;padding:32px;background:rgba(184,146,74,0.05);border:1px solid rgba(184,146,74,0.2);border-radius:var(--r);position:relative;overflow:hidden;}
+    .cta-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.4),transparent);}
+    .cta-block p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:18px;margin-bottom:20px;line-height:1.6;}
+    .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050608;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:14px 32px;border-radius:8px;text-decoration:none;transition:filter .2s,box-shadow .2s;box-shadow:0 0 24px rgba(184,146,74,0.25);}
+    .btn:hover{filter:brightness(1.1);box-shadow:0 0 40px rgba(184,146,74,0.4);}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}
+    footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+    .hero>*:nth-child(4){animation-delay:.3s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Coût de l'Inaction</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Retour au calculateur</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">⚠ Chaque seconde compte</div>
+    <h1>Le coût de<br><em>l'inaction</em></h1>
+    <p>Combien vous coûte chaque seconde passée à ne pas investir ? Ce compteur calcule en temps réel le capital futur que vous perdez en attendant.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- PARAMS -->
+    <div class="params-grid">
+      <div class="param-card">
+        <div class="param-label">Versement mensuel</div>
+        <div class="param-row"><span></span><span class="param-val" id="vp-m">300 €/mois</span></div>
+        <input type="range" id="rp-m" min="50" max="5000" step="50" value="300"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Taux annuel attendu</div>
+        <div class="param-row"><span></span><span class="param-val" id="vp-r">7,0 %</span></div>
+        <input type="range" id="rp-r" min="1" max="20" step="0.1" value="7"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Horizon de placement</div>
+        <div class="param-row"><span></span><span class="param-val" id="vp-y">30 ans</span></div>
+        <input type="range" id="rp-y" min="5" max="50" step="1" value="30"/>
+      </div>
+    </div>
+
+    <!-- MAIN COUNTER -->
+    <div class="clock-stage">
+      <div class="clock-label">Capital futur perdu depuis le chargement de la page</div>
+      <div class="clock-counter" id="main-counter">0,00 €</div>
+      <div class="clock-unit">capital futur évaporé</div>
+      <div class="clock-sub" id="clock-sub">Démarrage du compteur…</div>
+    </div>
+
+    <!-- RATES -->
+    <div class="rates-row">
+      <div class="rate-card">
+        <div class="rate-icon">⏱</div>
+        <div class="rate-label">Par seconde</div>
+        <div class="rate-val" id="r-sec">—</div>
+        <div class="rate-period">de capital futur perdu</div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">⏰</div>
+        <div class="rate-label">Par minute</div>
+        <div class="rate-val" id="r-min">—</div>
+        <div class="rate-period">de capital futur perdu</div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">🕐</div>
+        <div class="rate-label">Par heure</div>
+        <div class="rate-val" id="r-hour">—</div>
+        <div class="rate-period">de capital futur perdu</div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">📅</div>
+        <div class="rate-label">Par jour</div>
+        <div class="rate-val" id="r-day">—</div>
+        <div class="rate-period">de capital futur perdu</div>
+      </div>
+      <div class="rate-card">
+        <div class="rate-icon">📆</div>
+        <div class="rate-label">Par an</div>
+        <div class="rate-val" id="r-year">—</div>
+        <div class="rate-period">de capital futur perdu</div>
+      </div>
+    </div>
+
+    <!-- PERSPECTIVE -->
+    <div class="perspective">
+      <div class="persp-title">Mise en perspective — coût d'attendre 1 an de plus</div>
+      <div class="persp-grid" id="persp-grid">
+        <div class="persp-item"><div class="persp-val" id="pv-1y">—</div><div class="persp-desc">Capital final perdu si vous attendez 1 an</div></div>
+        <div class="persp-item"><div class="persp-val" id="pv-5y">—</div><div class="persp-desc">Capital final perdu si vous attendez 5 ans</div></div>
+        <div class="persp-item"><div class="persp-val" id="pv-10y">—</div><div class="persp-desc">Capital final perdu si vous attendez 10 ans</div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-block">
+      <p>Chaque jour de procrastination est une décision : celle de donner votre capital futur au temps plutôt qu'à vous-même.</p>
+      <a class="btn" href="../">Simuler mon investissement maintenant →</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Les chiffres illustrent la perte d'opportunité mathématique, pas une perte réelle. Outil pédagogique uniquement.</p>
+</footer>
+
+<script>
+(function(){
+  const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');
+  let W,H,particles=[],time=0;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,red:Math.random()>.6};}
+  resize();for(let i=0;i<100;i++)particles.push(mkP());
+  window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);time+=.004;
+    [{x:W*.2,y:H*.3,r:400,color:'rgba(239,68,68,0.03)'},{x:W*.8,y:H*.6,r:300,color:'rgba(239,68,68,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:450,color:'rgba(184,146,74,0.015)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});
+    ctx.strokeStyle='rgba(239,68,68,0.015)';ctx.lineWidth=1;
+    for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.red?`rgba(239,68,68,${p.opacity*.6})`:`rgba(184,146,74,${p.opacity*.4})`;ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+const fmtE=v=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(v);
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':fmtE(v);
+const fmtKs=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(3)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(2)+' k€':new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(v)+' €';
+
+function buildFV(m,r,t){
+  let cap=0,N=12;
+  for(let y=0;y<t;y++)for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}
+  return cap;
+}
+
+let perSec=0,startTime=Date.now();
+
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+
+function recalc(){
+  const m=+document.getElementById('rp-m').value,r=+document.getElementById('rp-r').value/100,t=+document.getElementById('rp-y').value;
+  document.getElementById('vp-m').textContent=m.toLocaleString('fr-FR')+' €/mois';
+  document.getElementById('vp-r').textContent=r*100+' %';
+  document.getElementById('vp-y').textContent=t+' ans';
+  const fv=buildFV(m,r,t);
+  const fvMinus1=buildFV(m,r,Math.max(1,t-1));
+  // Cost of waiting 1 month = difference in final value of starting 1 month later
+  // Approximate: starting 1 month later means 1 less month of contributions
+  // Per second = fv / (t * 365.25 * 24 * 3600)
+  perSec=fv/(t*365.25*24*3600);
+  const perMin=perSec*60,perHour=perSec*3600,perDay=perSec*86400,perYear=perSec*365.25*86400;
+  document.getElementById('r-sec').textContent=fmtKs(perSec)+'/s';
+  document.getElementById('r-min').textContent=fmtK(perMin);
+  document.getElementById('r-hour').textContent=fmtK(perHour);
+  document.getElementById('r-day').textContent=fmtK(perDay);
+  document.getElementById('r-year').textContent=fmtK(perYear);
+  // Perspective: cost of waiting 1, 5, 10 years
+  const fv1=buildFV(m,r,Math.max(1,t-1));
+  const fv5=buildFV(m,r,Math.max(1,t-5));
+  const fv10=buildFV(m,r,Math.max(1,t-10));
+  document.getElementById('pv-1y').textContent=fmtK(fv-fv1);
+  document.getElementById('pv-5y').textContent=fmtK(fv-fv5);
+  document.getElementById('pv-10y').textContent=fmtK(fv-fv10);
+  document.getElementById('clock-sub').textContent=`Basé sur ${m.toLocaleString('fr-FR')} €/mois · ${(r*100).toFixed(1)}% · ${t} ans → Capital cible : ${fmtK(fv)}`;
+  startTime=Date.now();
+  document.getElementById('main-counter').textContent='0,00 €';
+}
+
+['rp-m','rp-r','rp-y'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{updateGrad(el);recalc();});
+  updateGrad(el);
+});
+
+function tick(){
+  const elapsed=(Date.now()-startTime)/1000;
+  const lost=elapsed*perSec;
+  document.getElementById('main-counter').textContent=fmtKs(lost);
+  requestAnimationFrame(tick);
+}
+
+recalc();
+tick();
+</script>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>En Objets Concrets — Que représente vraiment votre capital ? | Kapitalize</title>
+  <meta name="description" content="Convertissez votre capital projeté en biens tangibles : appartements à Nice, années de salaire médian, nuits au Ritz. Donnez du sens à vos économies."/>
+  <meta name="keywords" content="capital en objets concrets, combien appartement avec epargne, salaire médian épargne, nuits hotel capital, patrimoine en biens réels, visualisation capital"/>
+  <meta name="author" content="Kapitalize"/>
+  <link rel="canonical" href="https://kapitalize.fr/objets-concrets/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#050608;--gold:#b8924a;--gold2:#d4a855;--gold3:#f0cc80;--green:#3ecf7a;--text:#e8e4dc;--muted:#7a8090;--muted2:#3a404c;--border:rgba(184,146,74,0.15);--border2:rgba(255,255,255,0.06);--r:12px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:13px;line-height:1.55;min-height:100vh;overflow-x:hidden;}
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+    body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px;}
+    nav,main,footer{position:relative;z-index:2;}
+    nav{position:sticky;top:0;z-index:100;background:rgba(5,6,8,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+    .nav-inner{max-width:1340px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px;padding:0 32px;}
+    .nav-logo{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);}
+    .logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold3));display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:#050608;}
+    .nav-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;background:linear-gradient(90deg,var(--gold2),var(--gold3),var(--gold2));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+    @keyframes shimmer{0%{background-position:0%;}100%{background-position:200%;}}
+    .nav-back{color:var(--muted);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--border2);transition:color .2s;}
+    .nav-back:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+    .hero{text-align:center;padding:56px 24px 36px;position:relative;}
+    .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.12) 0%,transparent 70%);pointer-events:none;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:18px;border:1px solid rgba(184,146,74,0.2);padding:6px 16px;border-radius:100px;background:rgba(184,146,74,0.05);}
+    .hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,56px);font-weight:700;line-height:1.05;margin-bottom:12px;}
+    .hero h1 em{font-style:italic;color:var(--gold2);}
+    .hero p{color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:17px;line-height:1.6;max-width:520px;margin:0 auto;}
+    .wrap{max-width:1340px;margin:0 auto;padding:0 32px 80px;}
+    /* PARAMS */
+    .params-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
+    .param-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;}
+    .param-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.3),transparent);}
+    .param-label{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-bottom:8px;font-weight:700;}
+    .param-val{font-size:13px;font-weight:700;color:var(--gold3);font-family:'Cormorant Garamond',serif;margin-bottom:8px;}
+    input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(to right,var(--gold) var(--pct,40%),rgba(255,255,255,0.08) var(--pct,40%));border-radius:2px;outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:radial-gradient(circle,var(--gold3) 30%,var(--gold) 100%);border-radius:50%;border:2px solid rgba(5,6,8,0.8);box-shadow:0 0 10px rgba(184,146,74,0.5);cursor:pointer;}
+    /* CAPITAL DISPLAY */
+    .capital-hero{text-align:center;padding:28px;background:linear-gradient(145deg,rgba(13,16,24,0.98),rgba(8,10,14,0.99));border:1px solid rgba(184,146,74,0.2);border-radius:var(--r);margin-bottom:24px;position:relative;overflow:hidden;}
+    .capital-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+    .capital-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(184,146,74,0.06) 0%,transparent 60%);pointer-events:none;}
+    .capital-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.18em;color:var(--gold2);font-weight:700;margin-bottom:8px;}
+    .capital-val{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,6vw,72px);font-weight:700;color:var(--gold2);line-height:1;text-shadow:0 0 40px rgba(184,146,74,0.3);}
+    .capital-sub{font-size:12px;color:var(--muted);margin-top:8px;}
+    /* OBJECTS GRID */
+    .objects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:24px;}
+    .obj-card{background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid var(--border2);border-radius:var(--r);padding:22px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s;}
+    .obj-card:hover{border-color:rgba(184,146,74,0.2);transform:translateY(-2px);}
+    .obj-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,146,74,0.2),transparent);}
+    .obj-icon{font-size:32px;margin-bottom:12px;display:block;}
+    .obj-category{font-size:8px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted2);font-weight:700;margin-bottom:6px;}
+    .obj-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+    .obj-ref{font-size:11px;color:var(--muted);margin-bottom:14px;}
+    .obj-quantity{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--gold2);line-height:1;margin-bottom:4px;}
+    .obj-unit{font-size:11px;color:var(--muted);font-weight:600;}
+    .obj-bar{height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;margin-top:12px;}
+    .obj-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold3));border-radius:2px;max-width:100%;}
+    /* CATEGORIES */
+    .cat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+    .cat-tab{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:6px 14px;border-radius:100px;border:1px solid var(--border2);color:var(--muted);cursor:pointer;transition:color .2s,background .2s,border-color .2s;}
+    .cat-tab.active,.cat-tab:hover{color:var(--gold2);border-color:rgba(184,146,74,0.3);background:rgba(184,146,74,0.06);}
+    footer{border-top:1px solid var(--border2);padding:32px;margin-top:48px;background:rgba(5,6,8,0.7);text-align:center;}
+    footer p{font-size:11px;color:var(--muted2);}footer a{color:var(--muted2);text-decoration:none;}footer a:hover{color:var(--gold2);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .hero>*{animation:fadeUp .7s ease forwards;}
+    .hero>*:nth-child(2){animation-delay:.1s;}
+    .hero>*:nth-child(3){animation-delay:.2s;}
+  </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="../">
+      <div class="logo-box">K</div>
+      <div style="display:flex;flex-direction:column;line-height:1;">
+        <span class="nav-name">KAPITALIZE</span>
+        <span style="font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;">Objets Concrets</span>
+      </div>
+    </a>
+    <a class="nav-back" href="../">← Calculateur principal</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <div class="hero-eyebrow">💡 Visualisation tangible · Kapitalize</div>
+    <h1>Que représente<br>vraiment votre <em>capital</em> ?</h1>
+    <p>Convertissez votre patrimoine projeté en biens concrets. Des chiffres abstraits aux réalités qui donnent envie d'investir.</p>
+  </div>
+
+  <div class="wrap">
+    <!-- PARAMS -->
+    <div class="params-grid">
+      <div class="param-card">
+        <div class="param-label">Capital initial</div>
+        <div class="param-val" id="vc-p">10 000 €</div>
+        <input type="range" id="rc-p" min="0" max="500000" step="500" value="10000"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Versement mensuel</div>
+        <div class="param-val" id="vc-m">300 €</div>
+        <input type="range" id="rc-m" min="0" max="5000" step="50" value="300"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Taux annuel</div>
+        <div class="param-val" id="vc-r">7,0 %</div>
+        <input type="range" id="rc-r" min="0" max="20" step="0.1" value="7"/>
+      </div>
+      <div class="param-card">
+        <div class="param-label">Horizon</div>
+        <div class="param-val" id="vc-y">25 ans</div>
+        <input type="range" id="rc-y" min="1" max="60" step="1" value="25"/>
+      </div>
+    </div>
+
+    <!-- CAPITAL HERO -->
+    <div class="capital-hero">
+      <div class="capital-lbl">Capital projeté dans <span id="ch-years">25 ans</span></div>
+      <div class="capital-val" id="ch-val">—</div>
+      <div class="capital-sub" id="ch-sub">—</div>
+    </div>
+
+    <!-- CATEGORIES FILTER -->
+    <div class="cat-tabs" id="cat-tabs">
+      <div class="cat-tab active" onclick="filterCat(this,'all')">Tout</div>
+      <div class="cat-tab" onclick="filterCat(this,'immo')">🏠 Immobilier</div>
+      <div class="cat-tab" onclick="filterCat(this,'luxe')">✨ Luxe & Prestige</div>
+      <div class="cat-tab" onclick="filterCat(this,'voyage')">✈️ Voyages</div>
+      <div class="cat-tab" onclick="filterCat(this,'vie')">🌱 Vie & Revenus</div>
+      <div class="cat-tab" onclick="filterCat(this,'education')">🎓 Éducation</div>
+    </div>
+
+    <!-- OBJECTS GRID -->
+    <div class="objects-grid" id="objects-grid"></div>
+
+    <div style="text-align:center;padding:20px;background:rgba(13,16,24,0.8);border:1px solid var(--border2);border-radius:var(--r);">
+      <p style="font-size:11px;color:var(--muted2);">💡 Prix indicatifs 2024–2025 en France. Immobilier Nice : ~5 000 €/m². Salaire médian France : ~2 000 € nets/mois. Tous les chiffres sont arrondis à des fins pédagogiques.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 <a href="../">Kapitalize</a> — Prix indicatifs à titre pédagogique uniquement. Pas un conseil financier.</p>
+</footer>
+
+<script>
+(function(){const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H,particles=[],time=0;function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}function mkP(){return{x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,size:Math.random()*1.5+.3,opacity:Math.random()*.4+.05,gold:Math.random()>.7};}resize();for(let i=0;i<100;i++)particles.push(mkP());window.addEventListener('resize',resize);function draw(){ctx.clearRect(0,0,W,H);time+=.004;[{x:W*.15,y:H*.25,r:350,color:'rgba(184,146,74,0.035)'},{x:W*.85,y:H*.65,r:280,color:'rgba(62,207,122,0.02)'},{x:W*.5+Math.sin(time*.3)*80,y:H*.4,r:400,color:'rgba(184,146,74,0.02)'}].forEach(o=>{const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);g.addColorStop(0,o.color);g.addColorStop(1,'transparent');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);});ctx.strokeStyle='rgba(184,146,74,0.018)';ctx.lineWidth=1;for(let x=0;x<W;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}for(let y=0;y<H;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.gold?`rgba(184,146,74,${p.opacity})`:`rgba(200,210,230,${p.opacity*.5})`;ctx.fill();});requestAnimationFrame(draw);}draw();})();
+
+const fmtK=v=>Math.abs(v)>=1e6?(v/1e6).toFixed(2)+' M€':Math.abs(v)>=1e3?(v/1e3).toFixed(1)+' k€':new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
+const fmt=n=>n>=1e6?(n/1e6).toFixed(2)+' M':n>=1e3?(n/1e3).toFixed(1)+' k':n.toFixed(n<10?1:0);
+
+// Object catalog
+const OBJECTS=[
+  // IMMO
+  {cat:'immo',icon:'🏠',category:'Immobilier Nice',name:'Studio 25m² à Nice',ref:'Centre-ville, ~5 000 €/m²',price:125000,unit:'studio(s)',unitMax:50},
+  {cat:'immo',icon:'🏡',category:'Immobilier Nice',name:'T3 60m² à Nice',ref:'Quartier résidentiel, 4 500 €/m²',price:270000,unit:'appartement(s)',unitMax:10},
+  {cat:'immo',icon:'🏰',category:'Immobilier France',name:'Maison à la campagne',ref:'Province, 150m²',price:200000,unit:'maison(s)',unitMax:20},
+  {cat:'immo',icon:'🏢',category:'Immobilier Paris',name:'Studio Paris intramuros',ref:'20m², arrondissement médian',price:200000,unit:'studio(s) Paris',unitMax:10},
+  {cat:'immo',icon:'🌴',category:'Immobilier Prestige',name:"Appartement vue mer à Cannes",ref:'50m², Croisette ~12 000 €/m²',price:600000,unit:'appartement(s)',unitMax:5},
+
+  // LUXE
+  {cat:'luxe',icon:'⌚',category:'Horlogerie de prestige',name:'Rolex Submariner',ref:'Acier, prix public boutique',price:10500,unit:'montre(s)',unitMax:200},
+  {cat:'luxe',icon:'🚗',category:'Automobile de luxe',name:'Porsche 911 Carrera neuve',ref:'Nouvelle génération, configurée',price:140000,unit:'Porsche(s)',unitMax:15},
+  {cat:'luxe',icon:'💍',category:'Joaillerie',name:'Diamant solitaire 1 carat',ref:'Bague engagement qualité VS1',price:8000,unit:'diamant(s)',unitMax:500},
+  {cat:'luxe',icon:'👜',category:'Mode & Maroquinerie',name:'Birkin Hermès 35',ref:'Cuir classique, liste d\'attente',price:12000,unit:'Birkin(s)',unitMax:200},
+  {cat:'luxe',icon:'🛥️',category:'Nautisme',name:'Semi-rigide 7m avec moteur',ref:'Zodiac Pro Open 7m équipé',price:45000,unit:'bateau(x)',unitMax:50},
+  {cat:'luxe',icon:'🚀',category:'Expériences uniques',name:'Vol spatial Virgin Galactic',ref:'60 minutes d\'apesanteur',price:450000,unit:'vol(s) spatiaux',unitMax:5},
+
+  // VOYAGE
+  {cat:'voyage',icon:'🏨',category:'Hôtellerie Prestige',name:'Nuit au Ritz Paris',ref:'Chambre Deluxe, Place Vendôme',price:1500,unit:'nuit(s) au Ritz',unitMax:10000},
+  {cat:'voyage',icon:'✈️',category:'Voyages Première Classe',name:'Paris → Tokyo en Première Air France',ref:'Aller simple Première Classe',price:7000,unit:'voyage(s) Première',unitMax:1000},
+  {cat:'voyage',icon:'🛳️',category:'Croisières Luxe',name:'Croisière Méditerranée 7j, suite',ref:'Celebrity Cruises, suite panoramique',price:8000,unit:'croisière(s)',unitMax:500},
+  {cat:'voyage',icon:'🏝️',category:'Séjours d\'exception',name:"Villa privée Maldives, 7 nuits",ref:'Overwater bungalow, all-inclusive',price:25000,unit:'séjour(s) Maldives',unitMax:100},
+  {cat:'voyage',icon:'🗺️',category:'Tour du monde',name:'Tour du monde en 80 jours',ref:'Business class + hôtels 5★',price:40000,unit:'tour(s) du monde',unitMax:50},
+
+  // VIE
+  {cat:'vie',icon:'💰',category:'Revenus',name:'Années de salaire médian français',ref:'26 000 €/an nets (médiane)',price:26000,unit:'année(s) de salaire médian',unitMax:100},
+  {cat:'vie',icon:'☕',category:'Quotidien',name:'Cafés expresso',ref:'Café de spécialité, 4 € pièce',price:4,unit:'café(s)',unitMax:1e7},
+  {cat:'vie',icon:'📺',category:'Abonnements Netflix',name:'Abonnements Netflix Premium',ref:'18 €/mois · 216 €/an',price:216,unit:'an(s) d\'abonnement',unitMax:50000},
+  {cat:'vie',icon:'🍽️',category:'Gastronomie',name:'Repas dans un 3 étoiles Michelin',ref:'Menu dégustation, 2 personnes',price:600,unit:'repas gastronomiques',unitMax:5000},
+  {cat:'vie',icon:'🎓',category:'Éducation',name:'Années de loyer Nice',ref:'T2, 900 €/mois = 10 800 €/an',price:10800,unit:'année(s) de loyer',unitMax:200},
+
+  // EDUCATION
+  {cat:'education',icon:'🎓',category:'Formation supérieure',name:'Années de grande école business',ref:'HEC, ESSEC, EDHEC ~22 000 €/an',price:22000,unit:'année(s) HEC/ESSEC',unitMax:100},
+  {cat:'education',icon:'🌍',category:'MBA International',name:'MBA Harvard Business School',ref:'Frais de scolarité annuels ~75 000 $',price:75000,unit:'semestre(s) Harvard',unitMax:20},
+  {cat:'education',icon:'💻',category:'Formation Tech',name:'Bootcamp développeur 6 mois',ref:'Le Wagon, Wild Code School ~7 000 €',price:7000,unit:'bootcamp(s)',unitMax:500},
+  {cat:'education',icon:'📚',category:'Formation continue',name:'Certifications professionnelles',ref:'CFA, PMP, cloud certifications ~500 €',price:500,unit:'certification(s)',unitMax:5000},
+];
+
+let activeFilter='all';
+
+function filterCat(el,cat){
+  activeFilter=cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function updateGrad(el){const pct=((+el.value-+el.min)/(+el.max-+el.min)*100).toFixed(1);el.style.setProperty('--pct',pct+'%');}
+['rc-p','rc-m','rc-r','rc-y'].forEach(id=>{
+  const el=document.getElementById(id);
+  el.addEventListener('input',()=>{
+    updateGrad(el);const v=+el.value;
+    if(id==='rc-p')document.getElementById('vc-p').textContent=v.toLocaleString('fr-FR')+' €';
+    if(id==='rc-m')document.getElementById('vc-m').textContent=v.toLocaleString('fr-FR')+' €';
+    if(id==='rc-r')document.getElementById('vc-r').textContent=v.toFixed(1)+' %';
+    if(id==='rc-y')document.getElementById('vc-y').textContent=v+' ans';
+    render();
+  });updateGrad(el);
+});
+
+function render(){
+  const P=+document.getElementById('rc-p').value||0,m=+document.getElementById('rc-m').value||0,r=+document.getElementById('rc-r').value/100||0,t=+document.getElementById('rc-y').value||1,N=12;
+  let cap=P;
+  for(let y=0;y<t;y++)for(let p=0;p<N;p++){cap*=(1+r/N);cap+=m;}
+
+  document.getElementById('ch-years').textContent=t+' ans';
+  document.getElementById('ch-val').textContent=fmtK(cap);
+  document.getElementById('ch-sub').textContent='Capital investi: '+fmtK(P+m*12*t)+' · Intérêts: '+fmtK(cap-(P+m*12*t));
+
+  const filtered=OBJECTS.filter(o=>activeFilter==='all'||o.cat===activeFilter);
+  const grid=document.getElementById('objects-grid');grid.innerHTML='';
+
+  filtered.forEach(obj=>{
+    const qty=cap/obj.price;
+    const displayQty=qty<1?'< 1':qty>=1e6?fmt(qty)+' M':qty>=1000?fmt(qty)+'k':qty.toFixed(qty<10?1:0);
+    const barPct=Math.min(100,Math.log10(Math.max(1,qty))/Math.log10(obj.unitMax)*100);
+
+    const card=document.createElement('div');card.className='obj-card';
+    card.innerHTML=`
+      <span class="obj-icon">${obj.icon}</span>
+      <div class="obj-category">${obj.category}</div>
+      <div class="obj-name">${obj.name}</div>
+      <div class="obj-ref">${obj.ref} · ${fmtK(obj.price)}/unité</div>
+      <div class="obj-quantity">${displayQty}</div>
+      <div class="obj-unit">${obj.unit}</div>
+      <div class="obj-bar"><div class="obj-bar-fill" style="width:${barPct.toFixed(1)}%;"></div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
