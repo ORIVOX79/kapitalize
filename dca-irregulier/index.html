@@ -160,14 +160,14 @@
               </div>
             </div>
             <select class="ph-input" id="ph-emoji">
-              <option value="·">· Début de carrière</option>
-              <option value="↑">↑ Montée en puissance</option>
-              <option value="—">— Achat immobilier</option>
-              <option value="○">○ Naissance enfant</option>
-              <option value="↑">↑ Promotion / Hausse revenus</option>
-              <option value="·">· Pause / Congé</option>
-              <option value="→">→ Expatriation</option>
-              <option value="◆">◆ Phase finale</option>
+              <option value="💼">💼 Début de carrière</option>
+              <option value="📈">📈 Montée en puissance</option>
+              <option value="🏠">🏠 Achat immobilier</option>
+              <option value="👶">👶 Naissance enfant</option>
+              <option value="🚀">🚀 Promotion / Hausse revenus</option>
+              <option value="⏸️">⏸️ Pause / Congé</option>
+              <option value="🌍">🌍 Expatriation</option>
+              <option value="🏆">🏆 Phase finale</option>
             </select>
             <button class="btn-add" onclick="addPhase()">+ Ajouter cette phase</button>
           </div>
@@ -259,7 +259,7 @@ function render(){
     const col=PHASE_COLORS[i%PHASE_COLORS.length];
     const div=document.createElement('div');div.className='phase-item';
     div.style.borderColor='rgba(96,165,250,0.1)';
-    div.innerHTML=`<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${col};border-radius:0 0 0 9px;"></div><div class="phase-dot" style="background:${col}22;color:${col};border:1px solid ${col}44;">${ph.emoji}</div><div class="phase-info"><div class="phase-name">${ph.name}</div><div class="phase-detail">${ph.monthly.toLocaleString('fr-FR')} €/mois · ${ph.years} ans</div></div><button class="phase-del" onclick="removePhase(${ph.id})">×</button>`;
+    div.innerHTML=`<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${col};border-radius:0 0 0 9px;"></div><div class="phase-dot" style="background:${col}22;color:${col};border:1px solid ${col}44;">${ph.emoji}</div><div class="phase-info"><div class="phase-name">${ph.name}</div><div class="phase-detail">${ph.monthly.toLocaleString('fr-FR')} €/mois · ${ph.years} ans</div></div><button class="phase-del" onclick="removePhase(${ph.id})">✕</button>`;
     listEl.appendChild(div);
   });
 
@@ -335,10 +335,10 @@ function render(){
 
 // Default phases
 phases=[
-  {name:'Début de carrière',monthly:200,years:5,emoji:'▪',id:1},
-  {name:'Après promotion',monthly:600,years:8,emoji:'↑',id:2},
-  {name:'Achat immo (pause)',monthly:50,years:2,emoji:'□',id:3},
-  {name:'Phase finale',monthly:1000,years:10,emoji:'◆',id:4}
+  {name:'Début de carrière',monthly:200,years:5,emoji:'💼',id:1},
+  {name:'Après promotion',monthly:600,years:8,emoji:'🚀',id:2},
+  {name:'Achat immo (pause)',monthly:50,years:2,emoji:'🏠',id:3},
+  {name:'Phase finale',monthly:1000,years:10,emoji:'🏆',id:4}
 ];
 render();
 </script>

@@ -312,8 +312,8 @@ function calc(){
 
   const diff=Math.abs(fvA-fvB);
   const aWins=fvA>fvB,tie=Math.abs(fvA-fvB)<100;
-  document.getElementById('badge-a').innerHTML=aWins&&!tie?'<div class="winner-badge gold">◆ Gagnante</div>':tie?'<div class="winner-badge tie">Égalité</div>':'';
-  document.getElementById('badge-b').innerHTML=!aWins&&!tie?'<div class="winner-badge blue">◆ Gagnante</div>':tie?'':'';
+  document.getElementById('badge-a').innerHTML=aWins&&!tie?'<div class="winner-badge gold">🏆 Gagnante</div>':tie?'<div class="winner-badge tie">Égalité</div>':'';
+  document.getElementById('badge-b').innerHTML=!aWins&&!tie?'<div class="winner-badge blue">🏆 Gagnante</div>':tie?'':'';
 
   document.getElementById('sc-a').textContent=fmtK(fvA);
   document.getElementById('sc-b').textContent=fmtK(fvB);
