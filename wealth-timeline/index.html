@@ -182,13 +182,13 @@
           <div class="add-milestone">
             <select id="ms-type">
               <option value="">— Type de jalon —</option>
-              <option value="🏠">🏠 Achat immobilier</option>
-              <option value="🎓">🎓 Études enfant</option>
-              <option value="🌴">🌴 Retraite anticipée</option>
-              <option value="✈️">✈️ Tour du monde</option>
-              <option value="💼">💼 Création d'entreprise</option>
-              <option value="👶">👶 Naissance enfant</option>
-              <option value="🏆">🏆 Objectif personnalisé</option>
+              <option value="□">Achat immobilier</option>
+              <option value="◉">Études enfant</option>
+              <option value="◈">Retraite anticipée</option>
+              <option value="→">Tour du monde</option>
+              <option value="▪">Création d'entreprise</option>
+              <option value="○">Naissance enfant</option>
+              <option value="◆">Objectif personnalisé</option>
             </select>
             <input type="text" id="ms-name" placeholder="Nom du jalon (ex: Appartement Nice)"/>
             <div class="add-milestone-row">
@@ -333,7 +333,7 @@ function render(){
     const capAtYear=ms.yr<=t?vals[Math.min(ms.yr,vals.length-1)]:null;
     const achievable=capAtYear!==null&&capAtYear>=ms.amt;
     const div=document.createElement('div');div.className='milestone-item';
-    div.innerHTML=`<div class="milestone-icon">${ms.icon}</div><div class="milestone-info"><div class="milestone-name">${ms.name}</div><div class="milestone-detail">Dans ${ms.yr} ans · ${fmtK(ms.amt)}</div></div><div class="milestone-status ${capAtYear===null?'ko':achievable?'ok':'ko'}">${capAtYear===null?'Hors horizon':achievable?'✓ Financé':'✗ Déficit'}</div><button class="milestone-del" onclick="removeMilestone(${ms.id})">✕</button>`;
+    div.innerHTML=`<div class="milestone-icon">${ms.icon}</div><div class="milestone-info"><div class="milestone-name">${ms.name}</div><div class="milestone-detail">Dans ${ms.yr} ans · ${fmtK(ms.amt)}</div></div><div class="milestone-status ${capAtYear===null?'ko':achievable?'ok':'ko'}">${capAtYear===null?'Hors horizon':achievable?'✓ Financé':'× Déficit'}</div><button class="milestone-del" onclick="removeMilestone(${ms.id})">×</button>`;
     listEl.appendChild(div);
   });
 
@@ -345,7 +345,7 @@ function render(){
     const capAtYear=ms.yr<=t?vals[Math.min(ms.yr,vals.length-1)]:null;
     const achievable=capAtYear!==null&&capAtYear>=ms.amt;
     const surplus=capAtYear!==null?capAtYear-ms.amt:null;
-    const badge=capAtYear===null?'<span class="badge ko">Hors horizon</span>':achievable?`<span class="badge ok">✓ +${fmtK(surplus)}</span>`:`<span class="badge ko">✗ ${fmtK(surplus)}</span>`;
+    const badge=capAtYear===null?'<span class="badge ko">Hors horizon</span>':achievable?`<span class="badge ok">✓ +${fmtK(surplus)}</span>`:`<span class="badge ko">× ${fmtK(surplus)}</span>`;
     const tr=document.createElement('tr');
     tr.innerHTML=`<td>${ms.icon} ${ms.name}</td><td>An ${ms.yr}</td><td>${fmtK(ms.amt)}</td><td>${capAtYear!==null?fmtK(capAtYear):'—'}</td><td>${badge}</td>`;
     tbody.appendChild(tr);
@@ -395,9 +395,9 @@ function render(){
 
 // Default milestones
 milestones=[
-  {icon:'🏠',name:'Apport immobilier',yr:7,amt:80000,id:1},
-  {icon:'🌴',name:'Retraite anticipée',yr:25,amt:800000,id:2},
-  {icon:'🎓',name:'Études enfant',yr:15,amt:50000,id:3}
+  {icon:'□',name:'Apport immobilier',yr:7,amt:80000,id:1},
+  {icon:'◈',name:'Retraite anticipée',yr:25,amt:800000,id:2},
+  {icon:'◉',name:'Études enfant',yr:15,amt:50000,id:3}
 ];
 render();
 </script>
