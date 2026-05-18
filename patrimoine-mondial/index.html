@@ -83,6 +83,13 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
     .hero>*{animation:fadeUp .7s ease forwards;}
     .hero>*:nth-child(2){animation-delay:.1s;}
+  
+    /* ─── SVG ICONS ─── */
+    svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+    .hero-badge svg,.hero-eyebrow svg,.panel-title svg,.nav-icon svg{opacity:.75;}
+    .hero-badge svg{width:12px;height:12px;}
+    .hero-eyebrow svg{width:12px;height:12px;}
+
   </style>
 </head>
 <body>
@@ -102,7 +109,7 @@
 
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">◎ Comparaison mondiale · Kapitalize</div>
+    <div class="hero-eyebrow"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M2 7h10"/><path d="M7 2c-1.8 1.8-1.8 8.4 0 10"/><path d="M7 2c1.8 1.8 1.8 8.4 0 10"/></svg> Comparaison mondiale · Kapitalize</div>
     <h1>Où vous situez-vous<br>dans le <em>patrimoine mondial</em> ?</h1>
     <p>Comparez votre capital actuel et projeté avec les données de patrimoine en France et dans le monde.</p>
   </div>

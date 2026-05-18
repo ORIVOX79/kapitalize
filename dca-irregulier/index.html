@@ -99,6 +99,13 @@
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
     .hero>*{animation:fadeUp .7s ease forwards;}
     .hero>*:nth-child(2){animation-delay:.1s;}
+  
+    /* ─── SVG ICONS ─── */
+    svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+    .hero-badge svg,.hero-eyebrow svg,.panel-title svg,.nav-icon svg{opacity:.75;}
+    .hero-badge svg{width:12px;height:12px;}
+    .hero-eyebrow svg{width:12px;height:12px;}
+
   </style>
 </head>
 <body>
@@ -160,14 +167,14 @@
               </div>
             </div>
             <select class="ph-input" id="ph-emoji">
-              <option value="·">· Début de carrière</option>
-              <option value="↑">↑ Montée en puissance</option>
-              <option value="—">— Achat immobilier</option>
-              <option value="○">○ Naissance enfant</option>
-              <option value="↑">↑ Promotion / Hausse revenus</option>
-              <option value="·">· Pause / Congé</option>
-              <option value="→">→ Expatriation</option>
-              <option value="◆">◆ Phase finale</option>
+              <option value="·">Début de carrière</option>
+              <option value="↑">Montée en puissance</option>
+              <option value="—">Achat immobilier</option>
+              <option value="·">Naissance enfant</option>
+              <option value="↑">Promotion / Hausse revenus</option>
+              <option value="·">Pause / Congé</option>
+              <option value="→">Expatriation</option>
+              <option value="·">Phase finale</option>
             </select>
             <button class="btn-add" onclick="addPhase()">+ Ajouter cette phase</button>
           </div>
@@ -335,10 +342,10 @@ function render(){
 
 // Default phases
 phases=[
-  {name:'Début de carrière',monthly:200,years:5,emoji:'▪',id:1},
+  {name:'Début de carrière',monthly:200,years:5,emoji:'·',id:1},
   {name:'Après promotion',monthly:600,years:8,emoji:'↑',id:2},
-  {name:'Achat immo (pause)',monthly:50,years:2,emoji:'□',id:3},
-  {name:'Phase finale',monthly:1000,years:10,emoji:'◆',id:4}
+  {name:'Achat immo (pause)',monthly:50,years:2,emoji:'·',id:3},
+  {name:'Phase finale',monthly:1000,years:10,emoji:'·',id:4}
 ];
 render();
 </script>

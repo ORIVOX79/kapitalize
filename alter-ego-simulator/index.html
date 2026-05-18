@@ -107,6 +107,13 @@
     .hero>*{animation:fadeUp .7s ease forwards;}
     .hero>*:nth-child(2){animation-delay:.1s;}
     .hero>*:nth-child(3){animation-delay:.2s;}
+  
+    /* ─── SVG ICONS ─── */
+    svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+    .hero-badge svg,.hero-eyebrow svg,.panel-title svg,.nav-icon svg{opacity:.75;}
+    .hero-badge svg{width:12px;height:12px;}
+    .hero-eyebrow svg{width:12px;height:12px;}
+
   </style>
 </head>
 <body>
@@ -312,8 +319,8 @@ function calc(){
 
   const diff=Math.abs(fvA-fvB);
   const aWins=fvA>fvB,tie=Math.abs(fvA-fvB)<100;
-  document.getElementById('badge-a').innerHTML=aWins&&!tie?'<div class="winner-badge gold">◆ Gagnante</div>':tie?'<div class="winner-badge tie">Égalité</div>':'';
-  document.getElementById('badge-b').innerHTML=!aWins&&!tie?'<div class="winner-badge blue">◆ Gagnante</div>':tie?'':'';
+  document.getElementById('badge-a').innerHTML=aWins&&!tie?'<div class="winner-badge gold"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5 12h4M7 9.5V12M4 2h6v4a3 3 0 01-6 0V2z"/><path d="M4 3H2.5v1.5a1.5 1.5 0 001.5 1.5M10 3h1.5v1.5A1.5 1.5 0 0110 6"/></svg> Gagnante</div>':tie?'<div class="winner-badge tie">Égalité</div>':'';
+  document.getElementById('badge-b').innerHTML=!aWins&&!tie?'<div class="winner-badge blue"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M5 12h4M7 9.5V12M4 2h6v4a3 3 0 01-6 0V2z"/><path d="M4 3H2.5v1.5a1.5 1.5 0 001.5 1.5M10 3h1.5v1.5A1.5 1.5 0 0110 6"/></svg> Gagnante</div>':tie?'':'';
 
   document.getElementById('sc-a').textContent=fmtK(fvA);
   document.getElementById('sc-b').textContent=fmtK(fvB);

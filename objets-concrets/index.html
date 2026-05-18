@@ -71,6 +71,13 @@
     .hero>*{animation:fadeUp .7s ease forwards;}
     .hero>*:nth-child(2){animation-delay:.1s;}
     .hero>*:nth-child(3){animation-delay:.2s;}
+  
+    /* ─── SVG ICONS ─── */
+    svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
+    .hero-badge svg,.hero-eyebrow svg,.panel-title svg,.nav-icon svg{opacity:.75;}
+    .hero-badge svg{width:12px;height:12px;}
+    .hero-eyebrow svg{width:12px;height:12px;}
+
   </style>
 </head>
 <body>
@@ -90,7 +97,7 @@
 
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">◈ Visualisation tangible · Kapitalize</div>
+    <div class="hero-eyebrow"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="1.5" y="7.5" width="3.5" height="5" rx=".5"/><rect x="5.3" y="4.5" width="3.5" height="8" rx=".5"/><rect x="9" y="2" width="3.5" height="10.5" rx=".5"/></svg> Visualisation tangible · Kapitalize</div>
     <h1>Que représente<br>vraiment votre <em>capital</em> ?</h1>
     <p>Convertissez votre patrimoine projeté en biens concrets. Des chiffres abstraits aux réalités qui donnent envie d'investir.</p>
   </div>
@@ -141,7 +148,7 @@
     <div class="objects-grid" id="objects-grid"></div>
 
     <div style="text-align:center;padding:20px;background:rgba(13,16,24,0.8);border:1px solid var(--border2);border-radius:var(--r);">
-      <p style="font-size:11px;color:var(--muted2);">◈ Prix indicatifs 2024–2025 en France. Immobilier Nice : ~5 000 €/m². Salaire médian France : ~2 000 € nets/mois. Tous les chiffres sont arrondis à des fins pédagogiques.</p>
+      <p style="font-size:11px;color:var(--muted2);"><svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="1.5" y="7.5" width="3.5" height="5" rx=".5"/><rect x="5.3" y="4.5" width="3.5" height="8" rx=".5"/><rect x="9" y="2" width="3.5" height="10.5" rx=".5"/></svg> Prix indicatifs 2024–2025 en France. Immobilier Nice : ~5 000 €/m². Salaire médian France : ~2 000 € nets/mois. Tous les chiffres sont arrondis à des fins pédagogiques.</p>
     </div>
   </div>
 </main>
@@ -159,39 +166,39 @@ const fmt=n=>n>=1e6?(n/1e6).toFixed(2)+' M':n>=1e3?(n/1e3).toFixed(1)+' k':n.toF
 // Object catalog
 const OBJECTS=[
   // IMMO
-  {cat:'immo',icon:'□',category:'Immobilier Nice',name:'Studio 25m² à Nice',ref:'Centre-ville, ~5 000 €/m²',price:125000,unit:'studio(s)',unitMax:50},
-  {cat:'immo',icon:'□',category:'Immobilier Nice',name:'T3 60m² à Nice',ref:'Quartier résidentiel, 4 500 €/m²',price:270000,unit:'appartement(s)',unitMax:10},
-  {cat:'immo',icon:'□',category:'Immobilier France',name:'Maison à la campagne',ref:'Province, 150m²',price:200000,unit:'maison(s)',unitMax:20},
-  {cat:'immo',icon:'□',category:'Immobilier Paris',name:'Studio Paris intramuros',ref:'20m², arrondissement médian',price:200000,unit:'studio(s) Paris',unitMax:10},
-  {cat:'immo',icon:'◈',category:'Immobilier Prestige',name:"Appartement vue mer à Cannes",ref:'50m², Croisette ~12 000 €/m²',price:600000,unit:'appartement(s)',unitMax:5},
+  {cat:'immo',icon:'Im',category:'Immobilier Nice',name:'Studio 25m² à Nice',ref:'Centre-ville, ~5 000 €/m²',price:125000,unit:'studio(s)',unitMax:50},
+  {cat:'immo',icon:'Im',category:'Immobilier Nice',name:'T3 60m² à Nice',ref:'Quartier résidentiel, 4 500 €/m²',price:270000,unit:'appartement(s)',unitMax:10},
+  {cat:'immo',icon:'Im',category:'Immobilier France',name:'Maison à la campagne',ref:'Province, 150m²',price:200000,unit:'maison(s)',unitMax:20},
+  {cat:'immo',icon:'Im',category:'Immobilier Paris',name:'Studio Paris intramuros',ref:'20m², arrondissement médian',price:200000,unit:'studio(s) Paris',unitMax:10},
+  {cat:'immo',icon:'Lx',category:'Immobilier Prestige',name:"Appartement vue mer à Cannes",ref:'50m², Croisette ~12 000 €/m²',price:600000,unit:'appartement(s)',unitMax:5},
 
   // LUXE
-  {cat:'luxe',icon:'◷',category:'Horlogerie de prestige',name:'Rolex Submariner',ref:'Acier, prix public boutique',price:10500,unit:'montre(s)',unitMax:200},
-  {cat:'luxe',icon:'◈',category:'Automobile de luxe',name:'Porsche 911 Carrera neuve',ref:'Nouvelle génération, configurée',price:140000,unit:'Porsche(s)',unitMax:15},
-  {cat:'luxe',icon:'◇',category:'Joaillerie',name:'Diamant solitaire 1 carat',ref:'Bague engagement qualité VS1',price:8000,unit:'diamant(s)',unitMax:500},
-  {cat:'luxe',icon:'◈',category:'Mode & Maroquinerie',name:'Birkin Hermès 35',ref:'Cuir classique, liste d\'attente',price:12000,unit:'Birkin(s)',unitMax:200},
-  {cat:'luxe',icon:'◈',category:'Nautisme',name:'Semi-rigide 7m avec moteur',ref:'Zodiac Pro Open 7m équipé',price:45000,unit:'bateau(x)',unitMax:50},
+  {cat:'luxe',icon:'Hg',category:'Horlogerie de prestige',name:'Rolex Submariner',ref:'Acier, prix public boutique',price:10500,unit:'montre(s)',unitMax:200},
+  {cat:'luxe',icon:'Lx',category:'Automobile de luxe',name:'Porsche 911 Carrera neuve',ref:'Nouvelle génération, configurée',price:140000,unit:'Porsche(s)',unitMax:15},
+  {cat:'luxe',icon:'Jl',category:'Joaillerie',name:'Diamant solitaire 1 carat',ref:'Bague engagement qualité VS1',price:8000,unit:'diamant(s)',unitMax:500},
+  {cat:'luxe',icon:'Lx',category:'Mode & Maroquinerie',name:'Birkin Hermès 35',ref:'Cuir classique, liste d\'attente',price:12000,unit:'Birkin(s)',unitMax:200},
+  {cat:'luxe',icon:'Lx',category:'Nautisme',name:'Semi-rigide 7m avec moteur',ref:'Zodiac Pro Open 7m équipé',price:45000,unit:'bateau(x)',unitMax:50},
   {cat:'luxe',icon:'↑',category:'Expériences uniques',name:'Vol spatial Virgin Galactic',ref:'60 minutes d\'apesanteur',price:450000,unit:'vol(s) spatiaux',unitMax:5},
 
   // VOYAGE
-  {cat:'voyage',icon:'□',category:'Hôtellerie Prestige',name:'Nuit au Ritz Paris',ref:'Chambre Deluxe, Place Vendôme',price:1500,unit:'nuit(s) au Ritz',unitMax:10000},
+  {cat:'voyage',icon:'Im',category:'Hôtellerie Prestige',name:'Nuit au Ritz Paris',ref:'Chambre Deluxe, Place Vendôme',price:1500,unit:'nuit(s) au Ritz',unitMax:10000},
   {cat:'voyage',icon:'→',category:'Voyages Première Classe',name:'Paris → Tokyo en Première Air France',ref:'Aller simple Première Classe',price:7000,unit:'voyage(s) Première',unitMax:1000},
-  {cat:'voyage',icon:'◈️',category:'Croisières Luxe',name:'Croisière Méditerranée 7j, suite',ref:'Celebrity Cruises, suite panoramique',price:8000,unit:'croisière(s)',unitMax:500},
-  {cat:'voyage',icon:'◈️',category:'Séjours d\'exception',name:"Villa privée Maldives, 7 nuits",ref:'Overwater bungalow, all-inclusive',price:25000,unit:'séjour(s) Maldives',unitMax:100},
-  {cat:'voyage',icon:'◎',category:'Tour du monde',name:'Tour du monde en 80 jours',ref:'Business class + hôtels 5★',price:40000,unit:'tour(s) du monde',unitMax:50},
+  {cat:'voyage',icon:'·',category:'Croisières Luxe',name:'Croisière Méditerranée 7j, suite',ref:'Celebrity Cruises, suite panoramique',price:8000,unit:'croisière(s)',unitMax:500},
+  {cat:'voyage',icon:'·',category:'Séjours d\'exception',name:"Villa privée Maldives, 7 nuits",ref:'Overwater bungalow, all-inclusive',price:25000,unit:'séjour(s) Maldives',unitMax:100},
+  {cat:'voyage',icon:'Vg',category:'Tour du monde',name:'Tour du monde en 80 jours',ref:'Business class + hôtels 5★',price:40000,unit:'tour(s) du monde',unitMax:50},
 
   // VIE
-  {cat:'vie',icon:'◈',category:'Revenus',name:'Années de salaire médian français',ref:'26 000 €/an nets (médiane)',price:26000,unit:'année(s) de salaire médian',unitMax:100},
-  {cat:'vie',icon:'◈',category:'Quotidien',name:'Cafés expresso',ref:'Café de spécialité, 4 € pièce',price:4,unit:'café(s)',unitMax:1e7},
-  {cat:'vie',icon:'◈',category:'Abonnements Netflix',name:'Abonnements Netflix Premium',ref:'18 €/mois · 216 €/an',price:216,unit:'an(s) d\'abonnement',unitMax:50000},
-  {cat:'vie',icon:'◈️',category:'Gastronomie',name:'Repas dans un 3 étoiles Michelin',ref:'Menu dégustation, 2 personnes',price:600,unit:'repas gastronomiques',unitMax:5000},
-  {cat:'vie',icon:'◉',category:'Éducation',name:'Années de loyer Nice',ref:'T2, 900 €/mois = 10 800 €/an',price:10800,unit:'année(s) de loyer',unitMax:200},
+  {cat:'vie',icon:'Lx',category:'Revenus',name:'Années de salaire médian français',ref:'26 000 €/an nets (médiane)',price:26000,unit:'année(s) de salaire médian',unitMax:100},
+  {cat:'vie',icon:'Lx',category:'Quotidien',name:'Cafés expresso',ref:'Café de spécialité, 4 € pièce',price:4,unit:'café(s)',unitMax:1e7},
+  {cat:'vie',icon:'Lx',category:'Abonnements Netflix',name:'Abonnements Netflix Premium',ref:'18 €/mois · 216 €/an',price:216,unit:'an(s) d\'abonnement',unitMax:50000},
+  {cat:'vie',icon:'·',category:'Gastronomie',name:'Repas dans un 3 étoiles Michelin',ref:'Menu dégustation, 2 personnes',price:600,unit:'repas gastronomiques',unitMax:5000},
+  {cat:'vie',icon:'Ed',category:'Éducation',name:'Années de loyer Nice',ref:'T2, 900 €/mois = 10 800 €/an',price:10800,unit:'année(s) de loyer',unitMax:200},
 
   // EDUCATION
-  {cat:'education',icon:'◉',category:'Formation supérieure',name:'Années de grande école business',ref:'HEC, ESSEC, EDHEC ~22 000 €/an',price:22000,unit:'année(s) HEC/ESSEC',unitMax:100},
-  {cat:'education',icon:'◎',category:'MBA International',name:'MBA Harvard Business School',ref:'Frais de scolarité annuels ~75 000 $',price:75000,unit:'semestre(s) Harvard',unitMax:20},
-  {cat:'education',icon:'◈',category:'Formation Tech',name:'Bootcamp développeur 6 mois',ref:'Le Wagon, Wild Code School ~7 000 €',price:7000,unit:'bootcamp(s)',unitMax:500},
-  {cat:'education',icon:'◈',category:'Formation continue',name:'Certifications professionnelles',ref:'CFA, PMP, cloud certifications ~500 €',price:500,unit:'certification(s)',unitMax:5000},
+  {cat:'education',icon:'Ed',category:'Formation supérieure',name:'Années de grande école business',ref:'HEC, ESSEC, EDHEC ~22 000 €/an',price:22000,unit:'année(s) HEC/ESSEC',unitMax:100},
+  {cat:'education',icon:'Vg',category:'MBA International',name:'MBA Harvard Business School',ref:'Frais de scolarité annuels ~75 000 $',price:75000,unit:'semestre(s) Harvard',unitMax:20},
+  {cat:'education',icon:'Lx',category:'Formation Tech',name:'Bootcamp développeur 6 mois',ref:'Le Wagon, Wild Code School ~7 000 €',price:7000,unit:'bootcamp(s)',unitMax:500},
+  {cat:'education',icon:'Lx',category:'Formation continue',name:'Certifications professionnelles',ref:'CFA, PMP, cloud certifications ~500 €',price:500,unit:'certification(s)',unitMax:5000},
 ];
 
 let activeFilter='all';
