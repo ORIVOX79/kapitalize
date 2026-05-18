@@ -58,7 +58,18 @@
     .tool-card:hover{border-color:var(--tool-border,rgba(184,146,74,0.2));}
     .tool-number{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:rgba(184,146,74,0.1);line-height:1;margin-bottom:12px;transition:color .2s;}
     .tool-card:hover .tool-number{color:rgba(184,146,74,0.18);}
-    .tool-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:flex-start;margin-bottom:12px;color:var(--gold2);opacity:.8;} .tool-icon svg{width:20px;height:20px;}
+    .tool-icon{
+      width:48px;height:48px;
+      display:flex;align-items:center;justify-content:center;
+      margin-bottom:16px;
+      border-radius:12px;
+      background:linear-gradient(135deg,rgba(184,146,74,0.14),rgba(184,146,74,0.05));
+      border:1px solid rgba(184,146,74,0.22);
+      box-shadow:0 0 24px rgba(184,146,74,0.08),inset 0 1px 0 rgba(255,255,255,0.07);
+      color:var(--gold2);
+      flex-shrink:0;
+    }
+    .tool-icon svg{width:24px;height:24px;}
     .tool-tag{font-size:8px;text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-bottom:8px;color:var(--tool-accent,var(--gold2));}
     .tool-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.2;}
     .tool-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
@@ -96,9 +107,9 @@
   
     /* ─── SVG ICONS ─── */
     svg{display:inline-block;vertical-align:middle;flex-shrink:0;}
-    .hero-badge svg,.hero-eyebrow svg,.panel-title svg,.nav-icon svg{opacity:.75;}
-    .hero-badge svg{width:12px;height:12px;}
-    .hero-eyebrow svg{width:12px;height:12px;}
+    .hero-eyebrow svg{width:16px!important;height:16px!important;opacity:.9;color:var(--gold2);}
+    .hero-badge svg{width:18px!important;height:18px!important;opacity:.9;color:var(--gold2);}
+    .tool-icon svg{width:24px!important;height:24px!important;}
 
   </style>
 </head>
@@ -144,7 +155,16 @@
           <div class="featured-number">01</div>
         </div>
         <div>
-          <div class="tool-icon"></div>
+          <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+  <rect x="8" y="5" width="24" height="30" rx="3"/>
+  <line x1="12" y1="13" x2="28" y2="13"/>
+  <circle cx="14" cy="20" r="2" fill="currentColor" stroke="none"/>
+  <circle cx="20" cy="20" r="2" fill="currentColor" stroke="none"/>
+  <circle cx="26" cy="20" r="2" fill="currentColor" stroke="none"/>
+  <circle cx="14" cy="27" r="2" fill="currentColor" stroke="none"/>
+  <circle cx="20" cy="27" r="2" fill="currentColor" stroke="none"/>
+  <circle cx="26" cy="27" r="2" fill="currentColor" stroke="none"/>
+</svg></div>
           <div class="tool-tag">Calculateur central · Kapitalize</div>
           <div class="tool-name">Simulateur d'Intérêts Composés</div>
           <div class="tool-desc">Le calculateur complet : capital initial, versements mensuels, taux, durée, capitalisation (jour/mois/trim/an), inflation, flat tax PFU, Chart.js (line + doughnut), KPI cards, règle des 72, CAGR, tableau annuel, objectif cible.</div>
@@ -167,7 +187,14 @@
 
       <a href="../wealth-timeline/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#d4a855,transparent);--tool-border:rgba(212,168,85,0.3);--tool-glow:rgba(212,168,85,0.07);--tool-accent:#d4a855;">
         <div class="tool-number">02</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="10" cy="12" r="3.5"/>
+  <circle cx="10" cy="28" r="3.5"/>
+  <line x1="10" y1="15.5" x2="10" y2="24.5"/>
+  <line x1="14" y1="12" x2="32" y2="12"/>
+  <line x1="14" y1="28" x2="32" y2="28"/>
+  <line x1="14" y1="20" x2="26" y2="20" stroke-opacity=".4"/>
+</svg></div>
         <div class="tool-tag">Planification · Jalons de vie</div>
         <div class="tool-name">Wealth Timeline</div>
         <div class="tool-desc">Placez vos jalons de vie (retraite, immobilier, études) sur votre courbe patrimoniale. Découvrez si votre capital sera suffisant à chaque étape clé.</div>
@@ -180,7 +207,11 @@
 
       <a href="../alter-ego-simulator/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#60a5fa,transparent);--tool-border:rgba(96,165,250,0.3);--tool-glow:rgba(96,165,250,0.06);--tool-accent:#60a5fa;">
         <div class="tool-number">03</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <line x1="6" y1="20" x2="34" y2="20"/>
+  <polyline points="26,12 34,20 26,28"/>
+  <polyline points="14,12 6,20 14,28" stroke-opacity=".45"/>
+</svg></div>
         <div class="tool-tag">Comparaison · Stratégies</div>
         <div class="tool-name">Alter Ego Simulator</div>
         <div class="tool-desc">Comparez deux stratégies d'investissement en miroir. DCA vs Lump Sum, conservateur vs agressif — découvrez quelle approche gagne sur le long terme.</div>
@@ -193,7 +224,11 @@
 
       <a href="../cout-de-linaction/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#ef4444,transparent);--tool-border:rgba(239,68,68,0.3);--tool-glow:rgba(239,68,68,0.06);--tool-accent:#ef4444;">
         <div class="tool-number">04</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M20 7L35 33H5L20 7z"/>
+  <line x1="20" y1="17" x2="20" y2="26"/>
+  <circle cx="20" cy="30" r="1.5" fill="currentColor" stroke="none"/>
+</svg></div>
         <div class="tool-tag">Urgence · Temps réel</div>
         <div class="tool-name">Coût de l'Inaction</div>
         <div class="tool-desc">Compteur en temps réel du capital futur perdu chaque seconde. L'outil le plus percutant pour passer à l'action — voir l'argent s'évaporer en direct.</div>
@@ -206,7 +241,12 @@
 
       <a href="../scenarios-historiques/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#a78bfa,transparent);--tool-border:rgba(167,139,250,0.3);--tool-glow:rgba(167,139,250,0.06);--tool-accent:#a78bfa;">
         <div class="tool-number">05</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M7 20A13 13 0 1020 7"/>
+  <polyline points="7,7 7,20 20,20"/>
+  <line x1="20" y1="14" x2="20" y2="21" stroke-width="2"/>
+  <line x1="20" y1="21" x2="25" y2="24" stroke-width="2"/>
+</svg></div>
         <div class="tool-tag">Backtesting · Histoire</div>
         <div class="tool-name">Scénarios Historiques</div>
         <div class="tool-desc">Simulez votre investissement lors des crises : 2008, COVID, dot-com, stagflation. Découvrez comment les intérêts composés résistent aux chocs historiques.</div>
@@ -219,7 +259,10 @@
 
       <a href="../liberte-financiere/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#3ecf7a,transparent);--tool-border:rgba(62,207,122,0.3);--tool-glow:rgba(62,207,122,0.06);--tool-accent:#3ecf7a;">
         <div class="tool-number">06</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M20 34c-7 0-11-4-11-9.5 0-4.5 3-7 3-7s1 3 4 3C16 14 18 9 23 6c0 5 5 8 5 13 1.5 0 2.5-1.5 2.5-1.5C30.5 21 31 23 31 24.5 31 30 25.5 34 20 34z"/>
+  <path d="M17 28c-2-1-3-3-3-5" stroke-opacity=".5"/>
+</svg></div>
         <div class="tool-tag">FIRE · Indépendance</div>
         <div class="tool-name">Liberté Financière</div>
         <div class="tool-desc">Calculez votre numéro FIRE avec la règle des 4%. Classic, Fat ou Lean FIRE — visualisez quand votre capital vivra à votre place.</div>
@@ -232,7 +275,12 @@
 
       <a href="../dca-irregulier/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#60a5fa,transparent);--tool-border:rgba(96,165,250,0.3);--tool-glow:rgba(96,165,250,0.05);--tool-accent:#60a5fa;">
         <div class="tool-number">07</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <polyline points="6,30 13,18 20,24 34,9"/>
+  <rect x="6" y="32" width="5" height="2" rx="1" fill="currentColor" stroke="none" opacity=".5"/>
+  <rect x="15" y="27" width="5" height="7" rx="1" fill="currentColor" stroke="none" opacity=".5"/>
+  <rect x="24" y="22" width="5" height="12" rx="1" fill="currentColor" stroke="none" opacity=".5"/>
+</svg></div>
         <div class="tool-tag">DCA · Versements flexibles</div>
         <div class="tool-name">DCA Irrégulier</div>
         <div class="tool-desc">Définissez plusieurs phases de versement. Début carrière, promotion, parentalité, accélération — simulez la vraie vie avec des versements variables.</div>
@@ -245,7 +293,12 @@
 
       <a href="../export-pdf/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,var(--gold3),transparent);--tool-border:rgba(240,204,128,0.3);--tool-glow:rgba(240,204,128,0.05);--tool-accent:var(--gold3);">
         <div class="tool-number">08</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M26 6H12a2 2 0 00-2 2v24a2 2 0 002 2h16a2 2 0 002-2V14L26 6z"/>
+  <path d="M26 6v8h8" stroke-opacity=".5"/>
+  <line x1="14" y1="20" x2="26" y2="20"/>
+  <line x1="14" y1="25" x2="22" y2="25"/>
+</svg></div>
         <div class="tool-tag">Rapport · Export PDF</div>
         <div class="tool-name">Export PDF Premium</div>
         <div class="tool-desc">Générez un rapport patrimonial PDF de qualité professionnelle signé Kapitalize. Prêt à partager avec votre conseiller financier ou votre famille.</div>
@@ -258,7 +311,9 @@
 
       <a href="../milestones/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,var(--gold2),transparent);--tool-border:rgba(212,168,85,0.3);--tool-glow:rgba(212,168,85,0.07);--tool-accent:var(--gold2);">
         <div class="tool-number">09</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <polygon points="20,6 24,15 34,16.5 27,23 28.5,33 20,29 11.5,33 13,23 6,16.5 16,15"/>
+</svg></div>
         <div class="tool-tag">Paliers · Célébrations</div>
         <div class="tool-name">Milestones & Célébrations</div>
         <div class="tool-desc">Visualisez quand vous franchirez 100k€, 500k€ et 1 million d'euros. Avec effets confettis dorés et célébrations animées pour chaque palier atteint.</div>
@@ -271,7 +326,14 @@
 
       <a href="../patrimoine-mondial/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#a78bfa,transparent);--tool-border:rgba(167,139,250,0.3);--tool-glow:rgba(167,139,250,0.06);--tool-accent:#a78bfa;">
         <div class="tool-number">10</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+  <circle cx="20" cy="20" r="13"/>
+  <line x1="7" y1="20" x2="33" y2="20"/>
+  <path d="M20 7c-4.5 4.5-4.5 21.5 0 26"/>
+  <path d="M20 7c4.5 4.5 4.5 21.5 0 26"/>
+  <line x1="9" y1="13" x2="31" y2="13" stroke-opacity=".4"/>
+  <line x1="9" y1="27" x2="31" y2="27" stroke-opacity=".4"/>
+</svg></div>
         <div class="tool-tag">Percentile · Comparaison mondiale</div>
         <div class="tool-name">Patrimoine Mondial</div>
         <div class="tool-desc">Où vous situez-vous dans la distribution mondiale des patrimoines ? Comparez votre capital avec les données INSEE et UBS Wealth Report 2023.</div>
@@ -284,7 +346,11 @@
 
       <a href="../objets-concrets/" class="tool-card" style="--tool-color:linear-gradient(90deg,transparent,#f0cc80,transparent);--tool-border:rgba(240,204,128,0.3);--tool-glow:rgba(240,204,128,0.06);--tool-accent:#f0cc80;">
         <div class="tool-number">11</div>
-        <div class="tool-icon"></div>
+        <div class="tool-icon"><svg width="22" height="22" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+  <rect x="5" y="22" width="9" height="12" rx="1.5"/>
+  <rect x="16" y="14" width="9" height="20" rx="1.5"/>
+  <rect x="27" y="6" width="9" height="28" rx="1.5"/>
+</svg></div>
         <div class="tool-tag">Visualisation · Objets réels</div>
         <div class="tool-name">En Objets Concrets</div>
         <div class="tool-desc">Convertissez votre capital projeté en biens tangibles : appartements à Nice, années de salaire médian, nuits au Ritz, Rolex, voyages en Première Classe.</div>
