@@ -383,10 +383,51 @@
     .milestone-toast-sub{font-size:13px;color:var(--muted);}
     .milestone-toast-btn{margin-top:20px;padding:10px 28px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#050608;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;}
     #confetti-canvas{position:fixed;inset:0;z-index:9998;pointer-events:none;}
-    .milestone-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-    .milestone-badge{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-radius:100px;font-size:11px;color:var(--muted);transition:all .3s;}
-    .milestone-badge.unlocked{border-color:rgba(184,146,74,0.3);background:rgba(184,146,74,0.05);color:var(--gold3);}
-    .milestone-badge-icon{font-size:14px;}
+    .milestone-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+    .milestone-badge{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:9px 18px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.06);
+      border-radius:8px;
+      font-family:'Cormorant Garamond',serif;
+      font-size:13px;font-weight:600;
+      color:var(--muted2);
+      letter-spacing:.04em;
+      transition:all .35s cubic-bezier(.4,0,.2,1);
+      position:relative;overflow:hidden;
+    }
+    .milestone-badge::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(184,146,74,0.15),transparent);
+    }
+    .milestone-badge.unlocked{
+      border-color:rgba(184,146,74,0.35);
+      background:linear-gradient(145deg,rgba(184,146,74,0.08),rgba(184,146,74,0.03));
+      color:var(--gold3);
+      box-shadow:0 0 20px rgba(184,146,74,0.08);
+    }
+    .milestone-badge.unlocked::before{
+      background:linear-gradient(90deg,transparent,rgba(184,146,74,0.5),transparent);
+    }
+    .milestone-badge-amount{
+      font-size:14px;font-weight:700;
+      font-family:'Cormorant Garamond',serif;
+      letter-spacing:.02em;
+    }
+    .milestone-badge-line{
+      width:1px;height:14px;
+      background:rgba(184,146,74,0.2);
+      flex-shrink:0;
+    }
+    .milestone-badge-status{
+      font-family:'Syne',sans-serif;
+      font-size:8px;font-weight:700;
+      letter-spacing:.14em;text-transform:uppercase;
+      opacity:.5;
+    }
+    .milestone-badge.unlocked .milestone-badge-status{opacity:.8;color:var(--gold2);}
+    .milestone-badge-icon{display:none;}
 
     /* ══════════════════════════════════════════════
        FEATURE 10 — OBJETS CONCRETS
@@ -540,7 +581,7 @@
 
         <!-- FEATURE 7: DCA IRRÉGULIER -->
         <div class="panel" style="margin-bottom:16px;">
-          <div class="panel-title">▣ DCA Irrégulier</div>
+          <div class="panel-title">DCA Irrégulier</div>
           <p style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Définissez des versements différents selon les périodes de votre vie.</p>
           <div class="dca-timeline" id="dca-timeline"></div>
           <button class="btn btn-ghost btn-sm" onclick="calcDCA()" style="margin-top:8px;width:100%;justify-content:center;">↺ Recalculer avec DCA personnalisé</button>
@@ -555,7 +596,7 @@
 
         <!-- FEATURE 1: WEALTH TIMELINE -->
         <div class="panel">
-          <div class="panel-title">◷ Jalons de vie</div>
+          <div class="panel-title">Jalons de vie</div>
           <p style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.6;">Placez vos objectifs sur la courbe. Kapitalize calcule si vous serez prêt.</p>
           <div class="milestone-list" id="milestone-list"></div>
           <button class="add-milestone" onclick="addMilestone()">
@@ -592,13 +633,33 @@
 
         <!-- FEATURE 9: MILESTONE BADGES -->
         <div class="panel" style="margin-bottom:12px;">
-          <div class="panel-title">◉ Paliers franchis</div>
+          <div class="panel-title">Paliers franchis</div>
           <div class="milestone-badges" id="milestone-badges">
-            <div class="milestone-badge" id="badge-100k"><span class="milestone-badge-icon">◉</span> 100 000 €</div>
-            <div class="milestone-badge" id="badge-250k"><span class="milestone-badge-icon">◇</span> 250 000 €</div>
-            <div class="milestone-badge" id="badge-500k"><span class="milestone-badge-icon">◆</span> 500 000 €</div>
-            <div class="milestone-badge" id="badge-1m"><span class="milestone-badge-icon">◇</span> 1 M€</div>
-            <div class="milestone-badge" id="badge-5m"><span class="milestone-badge-icon">✦</span> 5 M€</div>
+            <div class="milestone-badge" id="badge-100k">
+              <span class="milestone-badge-amount">100 000 €</span>
+              <span class="milestone-badge-line"></span>
+              <span class="milestone-badge-status">À atteindre</span>
+            </div>
+            <div class="milestone-badge" id="badge-250k">
+              <span class="milestone-badge-amount">250 000 €</span>
+              <span class="milestone-badge-line"></span>
+              <span class="milestone-badge-status">À atteindre</span>
+            </div>
+            <div class="milestone-badge" id="badge-500k">
+              <span class="milestone-badge-amount">500 000 €</span>
+              <span class="milestone-badge-line"></span>
+              <span class="milestone-badge-status">À atteindre</span>
+            </div>
+            <div class="milestone-badge" id="badge-1m">
+              <span class="milestone-badge-amount">1 M€</span>
+              <span class="milestone-badge-line"></span>
+              <span class="milestone-badge-status">À atteindre</span>
+            </div>
+            <div class="milestone-badge" id="badge-5m">
+              <span class="milestone-badge-amount">5 M€</span>
+              <span class="milestone-badge-line"></span>
+              <span class="milestone-badge-status">À atteindre</span>
+            </div>
           </div>
         </div>
 
@@ -639,7 +700,7 @@
 
         <!-- FEATURE 4: PERCENTILE MONDIAL -->
         <div class="percentile-wrap">
-          <div class="panel-title">◎ Votre rang mondial</div>
+          <div class="panel-title">Votre rang mondial</div>
           <div style="text-align:center;margin-bottom:8px;">
             <div class="percentile-val" id="percentile-val">—</div>
             <div class="percentile-desc" id="percentile-desc">Calculez votre simulation pour voir votre rang.</div>
@@ -711,13 +772,13 @@
 
         <!-- FEATURE 10: OBJETS CONCRETS -->
         <div class="panel" style="margin-bottom:12px;">
-          <div class="panel-title">▣ Votre capital en choses concrètes</div>
+          <div class="panel-title">Votre capital en choses concrètes</div>
           <div class="concrete-grid" id="concrete-grid"></div>
         </div>
 
         <!-- FEATURE 8: EXPORT -->
         <div class="export-panel">
-          <div class="panel-title">▤ Rapport Premium</div>
+          <div class="panel-title">Rapport Premium</div>
           <div class="export-preview">
             <div class="export-preview-title">Rapport Kapitalize</div>
             <div class="export-preview-sub">Votre simulation complète, prête à partager</div>
@@ -880,7 +941,7 @@
 
     <!-- IMPACT DES FRAIS -->
     <div class="panel" style="margin-top:16px;">
-      <div class="panel-title">◈ Impact des frais sur 20 ans</div>
+      <div class="panel-title">Impact des frais sur 20 ans</div>
       <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">1% de frais annuels supplémentaires sur la stratégie Alpha représenterait une perte de <strong id="fee-impact" style="color:var(--red);">—</strong> à terme.</p>
       <div style="background:rgba(224,82,82,0.04);border:1px solid rgba(224,82,82,0.15);border-radius:8px;padding:14px;">
         <div style="font-size:11px;color:var(--muted);">Comparaison des frais</div>

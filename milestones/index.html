@@ -62,11 +62,39 @@
     .ms-card-glow{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s;}
     .ms-card.unlocked .ms-card-glow{opacity:1;}
     .ms-top{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
-    .ms-icon{font-size:28px;flex-shrink:0;}
+    .ms-icon{
+      width:36px;height:36px;border-radius:7px;
+      display:grid;place-items:center;flex-shrink:0;
+      font-family:'Cormorant Garamond',serif;
+      font-size:15px;font-weight:700;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.07);
+      color:var(--muted2);
+      letter-spacing:.05em;
+    }
     .ms-info{flex:1;}
-    .ms-amount{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;line-height:1;}
-    .ms-name{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:2px;}
-    .ms-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 12px;border-radius:100px;}
+    .ms-amount{
+      font-family:'Cormorant Garamond',serif;
+      font-size:24px;font-weight:700;line-height:1;
+      letter-spacing:-.01em;
+    }
+    .ms-name{
+      font-family:'Syne',sans-serif;
+      font-size:9px;text-transform:uppercase;letter-spacing:.14em;font-weight:700;margin-top:3px;
+    }
+    .ms-badge{
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'Cormorant Garamond',serif;
+      font-size:11px;font-weight:600;letter-spacing:.06em;
+      padding:5px 14px;
+      border-radius:6px;
+      position:relative;overflow:hidden;
+    }
+    .ms-badge::before{
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,currentColor,transparent);
+      opacity:.3;
+    }
     .ms-progress-wrap{margin-top:12px;}
     .ms-progress-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
     .ms-progress-fill{height:100%;border-radius:3px;transition:width .6s ease;}
@@ -203,13 +231,13 @@ function showToast(msg){
 
 /* APP */
 const MILESTONES=[
-  {amount:10000,icon:'○',name:'Décollage',color:'#60a5fa',glow:'rgba(96,165,250,0.12)',confetti:'#60a5fa',toast:'○ 10 000 € — La première brique du patrimoine !'},
-  {amount:50000,icon:'◇',name:'Cap des 50k',color:'#a78bfa',glow:'rgba(167,139,250,0.12)',confetti:'#a78bfa',toast:'◇ 50 000 € — Une étape majeure !'},
-  {amount:100000,icon:'◎',name:'Premier 100k',color:'#d4a855',glow:'rgba(212,168,85,0.15)',confetti:'#d4a855',toast:'◎ 100 000 € — Le premier capital sérieux !'},
-  {amount:250000,icon:'↑',name:'Quart de million',color:'#3ecf7a',glow:'rgba(62,207,122,0.12)',confetti:'#3ecf7a',toast:'↑ 250 000 € — Vous êtes dans la cour des grands !'},
-  {amount:500000,icon:'▣',name:'Demi-million',color:'#f0cc80',glow:'rgba(240,204,128,0.15)',confetti:'#f0cc80',toast:'▣ 500 000 € — La liberté financière est proche !'},
-  {amount:1000000,icon:'✦',name:'Millionnaire',color:'#b8924a',glow:'rgba(184,146,74,0.25)',confetti:'#b8924a',toast:'✦ 1 000 000 € — BIENVENUE DANS LE CLUB DES MILLIONNAIRES !'},
-  {amount:5000000,icon:'⟡',name:'5 Millions',color:'#f87171',glow:'rgba(248,113,113,0.12)',confetti:'#f87171',toast:'⟡ 5 000 000 € — Ultra High Net Worth !'},
+  {amount:10000,icon:'I',name:'Décollage',color:'#60a5fa',glow:'rgba(96,165,250,0.12)',confetti:'#60a5fa',toast:'10 000 € — La première brique du patrimoine.'},
+  {amount:50000,icon:'II',name:'Cap des 50k',color:'#a78bfa',glow:'rgba(167,139,250,0.12)',confetti:'#a78bfa',toast:'50 000 € — Une étape majeure.'},
+  {amount:100000,icon:'III',name:'Premier 100k',color:'#d4a855',glow:'rgba(212,168,85,0.15)',confetti:'#d4a855',toast:'100 000 € — Le premier capital sérieux.'},
+  {amount:250000,icon:'IV',name:'Quart de million',color:'#3ecf7a',glow:'rgba(62,207,122,0.12)',confetti:'#3ecf7a',toast:'250 000 € — Vous êtes dans la cour des grands.'},
+  {amount:500000,icon:'V',name:'Demi-million',color:'#f0cc80',glow:'rgba(240,204,128,0.15)',confetti:'#f0cc80',toast:'500 000 € — La liberté financière est proche.'},
+  {amount:1000000,icon:'VI',name:'Millionnaire',color:'#b8924a',glow:'rgba(184,146,74,0.25)',confetti:'#b8924a',toast:'1 000 000 € — Bienvenue dans le club des millionnaires.'},
+  {amount:5000000,icon:'VII',name:'5 Millions',color:'#f87171',glow:'rgba(248,113,113,0.12)',confetti:'#f87171',toast:'5 000 000 € — Ultra High Net Worth.'},
 ];
 
 let chartInst=null;
@@ -269,7 +297,7 @@ function render(){
     // Summary card
     const sc=document.createElement('div');
     sc.style.cssText=`background:linear-gradient(145deg,rgba(13,16,24,0.95),rgba(8,10,14,0.98));border:1px solid ${unlocked?ms.color+'33':'var(--border2)'};border-radius:10px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;`;
-    sc.innerHTML=`<div style="font-size:18px;margin-bottom:6px;">${ms.icon}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:${unlocked?ms.color:'var(--muted)'};">${fmtK(ms.amount)}</div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:${unlocked?ms.color:'var(--muted2)'};margin-top:3px;font-weight:700;">${unlocked?(reachYear===0?'Déjà atteint ✓':'An '+reachYear+' · '+(new Date().getFullYear()+reachYear)):'Hors horizon'}</div>`;
+    sc.innerHTML=`<div style="font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:700;letter-spacing:.14em;color:rgba(184,146,74,0.4);text-transform:uppercase;margin-bottom:8px;">${['I','II','III','IV','V','VI','VII'][i]}</div><div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:${unlocked?ms.color:'var(--muted)'};">${fmtK(ms.amount)}</div><div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:${unlocked?ms.color:'var(--muted2)'};margin-top:3px;font-weight:700;">${unlocked?(reachYear===0?'Déjà atteint ✓':'An '+reachYear+' · '+(new Date().getFullYear()+reachYear)):'Hors horizon'}</div>`;
     summaryEl.appendChild(sc);
   });
 
