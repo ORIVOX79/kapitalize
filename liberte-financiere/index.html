@@ -109,7 +109,7 @@
 
 <main>
   <div class="hero">
-    <div class="hero-eyebrow">🌴 Indépendance financière · FIRE</div>
+    <div class="hero-eyebrow">◈ Indépendance financière · FIRE</div>
     <h1>Votre point de<br><em>liberté financière</em></h1>
     <p>Quel capital vous permettrait de vivre de vos seuls intérêts ? Calculez votre chiffre magique et visualisez le chemin pour l'atteindre.</p>
   </div>
@@ -173,7 +173,7 @@
       <div>
         <!-- FIRE NUMBER -->
         <div class="fire-panel">
-          <div class="fire-eyebrow">🎯 Votre numéro FIRE</div>
+          <div class="fire-eyebrow">◎ Votre numéro FIRE</div>
           <div class="fire-number" id="fire-number">—</div>
           <div class="fire-sub" id="fire-sub">—</div>
           <div class="fire-progress-wrap">
@@ -268,7 +268,7 @@ function calc(){
   }
   if(fireReached){
     document.getElementById('inc-y').textContent=years+' ans';
-    document.getElementById('fire-status').textContent='🎯 Liberté atteinte dans '+years+' ans';
+    document.getElementById('fire-status').textContent='◎ Liberté atteinte dans '+years+' ans';
     document.getElementById('fire-status').className='fire-status reached';
   } else {
     document.getElementById('inc-y').textContent='60+ ans';
@@ -276,7 +276,7 @@ function calc(){
     document.getElementById('fire-status').className='fire-status progress';
   }
 
-  if(pct>=100){document.getElementById('fire-status').textContent='🎉 Vous êtes déjà financièrement libre !';document.getElementById('fire-status').className='fire-status reached';}
+  if(pct>=100){document.getElementById('fire-status').textContent=' Vous êtes déjà financièrement libre !';document.getElementById('fire-status').className='fire-status reached';}
 
   if(chartInst)chartInst.destroy();
   const ctx2=document.getElementById('chart').getContext('2d');
